@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>⛏ Generador Absoluto de Comandos Minecraft</title>
+<style>
+:root{color-scheme:dark;--bg:#1b1b1f;--p:#2a2a30;--p2:#35353d;--g:#5ac33f;--g2:#3c8527;--t:#eee;--m:#9a9aa5;--b:#4a4a55}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:14px system-ui,sans-serif}
+header{background:linear-gradient(#3c8527,#2b5f1c);padding:12px 14px;border-bottom:4px solid #7b5a35}
+h1{margin:0;font-size:18px;font-family:monospace}small{color:#cfe9c5}
+.ed{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}
+button,select,input,textarea{font:inherit;color:var(--t);background:var(--p2);border:2px solid var(--b);border-radius:4px;padding:7px}
+button{cursor:pointer}button:hover{border-color:var(--g)}button.on{background:var(--g2);border-color:var(--g)}
+nav{display:flex;overflow-x:auto;gap:4px;padding:8px;background:var(--p);position:sticky;top:0;z-index:5}
+nav button{white-space:nowrap}main{padding:10px;max-width:900px;margin:auto}
+.sec{display:none}.sec.on{display:block}
+.card{background:var(--p);border:2px solid var(--b);border-radius:6px;padding:10px;margin-bottom:10px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+label{display:block;font-size:12px;color:var(--m)}label input,label select,label textarea{width:100%;margin-top:2px}
+.out{background:#0c0c0e;border:2px solid var(--g2);border-radius:4px;padding:10px;font-family:monospace;word-break:break-all;white-space:pre-wrap;min-height:44px;color:#9dff7a;margin:8px 0}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}.chips button{padding:4px 9px;font-size:12px}
+.list{max-height:260px;overflow:auto;display:grid;gap:4px}
+.list button{text-align:left}.tag{font-size:10px;background:var(--g2);padding:1px 5px;border-radius:3px;margin-left:5px}
+.cc{display:inline-block;width:34px;height:34px;margin:2px;border-radius:4px;border:2px solid #000;cursor:pointer;font-size:10px;color:#000;text-align:center;line-height:30px}
+.hint{color:var(--m);font-size:12px}
+
+body{background:#1b1b1f radial-gradient(#26262c 1px,transparent 1px) 0 0/16px 16px}
+header{box-shadow:0 4px 0 #1d3d12}h1{letter-spacing:1px;text-shadow:2px 2px #1d3d12}
+.card{box-shadow:inset 0 0 0 2px #1b1b1f,3px 3px 0 #0008;border-color:#6b4f2e}
+button{box-shadow:inset -2px -2px #0005,inset 2px 2px #fff2;text-shadow:1px 1px #000}
+nav{border-bottom:3px solid #6b4f2e}canvas{image-rendering:pixelated;background:#0003;border:3px solid #6b4f2e;border-radius:4px;max-width:100%}
+.sw{width:26px;height:26px;padding:0;border:2px solid #000}.sw.on{outline:3px solid #fff}
+.lay{display:flex;gap:6px;align-items:center;background:var(--p2);padding:4px 8px;margin:3px 0;border-radius:4px}
+ol{padding-left:20px;line-height:1.6}details summary{cursor:pointer;margin:6px 0}
+
+nav#nav{display:none}header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}header>div.t{flex:1;min-width:180px}
+#mb{font-size:22px;padding:4px 12px}#bc{padding:6px 12px;background:var(--p);color:var(--m);font-size:12px;border-bottom:2px solid #0006}
+#ov{position:fixed;inset:0;background:#000a;display:none;z-index:20}#ov.on{display:block}
+#dr{position:fixed;top:0;bottom:0;left:0;width:min(88vw,330px);background:#222228;border-right:4px solid #6b4f2e;z-index:21;transform:translateX(-102%);transition:.2s;overflow-y:auto;padding:10px}
+#dr.on{transform:none}#dr details{margin:6px 0;background:var(--p);border:2px solid var(--b);border-radius:6px}#dr summary{padding:9px;font-weight:bold}
+#dr .mi{display:block;width:100%;text-align:left;border:0;border-radius:0;background:transparent;padding:8px 14px;box-shadow:none;border-top:1px solid #0004}#dr .mi:hover,#dr .mi.on{background:var(--g2)}
+.hg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.hg .card{margin:0}.hg button{display:block;margin:3px 0;width:100%;text-align:left}
+.tool.hid{display:none}body.B .tool[data-ed="j"],body.J .tool[data-ed="b"]{display:none}
+body.B header{background:linear-gradient(#2d6a8a,#1d4960);border-bottom-color:#4a3a22}body.B h1{text-shadow:2px 2px #0e2a3a}
+body.B label:has(#sq),body.B label:has(#ju),body.B label:has(#jh),body.B label:has(#in),body.B label:has(#icl),body.B label:has(#il),body.B label:has(#im),body.B label:has(#iu),body.B label:has(#cF),body.B label:has(#cK),body.B label:has(#cJ),body.B label:has([data-f=nm]),body.B label:has([data-f=col]),body.B label:has([data-f=lo]),body.B label:has([data-f=tm]),body.B label:has([data-f=tp]),body.B label:has([data-f=cm]),body.B label:has([data-f=x]),body.B label:has([data-f=g]),body.B label:has(#mX),body.B label:has(.mf),body.B label:has(#mA),body.B label:has(#mV){display:none}
+body.J label:has(#ik),body.J label:has(#il2),body.J label:has(#mB2){display:none}
+.cp{display:inline-block;margin:2px;padding:4px 8px;background:var(--p2);border:2px solid var(--b);border-radius:4px;cursor:pointer;font-size:12px}.cp:hover{border-color:var(--g)}
+body.B .jo,body.J .bo{display:none}
+.rg{display:grid;grid-template-columns:repeat(3,76px);gap:4px;margin:8px 0}.rg div,.rr{height:64px;background:#8b8b8b;border:3px solid #373737;color:#111;font-size:10px;display:flex;align-items:center;justify-content:center;text-align:center;word-break:break-word;padding:2px}.rr{width:76px;background:#6aa84f}
+</style></head><body>
+<header><button id="mb" onclick="mn(1)">☰</button><div class="t"><h1>⛏ Generador Absoluto de Comandos</h1><small>Java 26.3 · Bedrock 26.60</small></div>
+<div class="ed"><button id="eJ" class="on">☕ Java</button><button id="eB">🪨 Bedrock</button><label style="display:flex;gap:5px;align-items:center;margin:0"><input type="checkbox" id="sl" checked style="width:auto"> Barra "/"</label></div></header>
+<nav id="nav"></nav><div id="bc">🏠 Inicio</div><div id="ov" onclick="mn(0)"></div><aside id="dr"><input id="mq" placeholder="🔍 Buscar función…" style="width:100%"><div id="mm"></div></aside>
+<main>
+<section class="sec" id="s0"><input id="q" placeholder="🔍 Buscar comando…" style="width:100%"><div class="chips" id="cats"></div><div class="list" id="cl"></div>
+<div class="card" id="cf" style="margin-top:10px"><b id="cn">Elige un comando</b><div class="row" id="ff"></div><div class="out" id="co"></div><button onclick="cp('co')">📋 Copiar</button> <button onclick="fvAdd()">⭐ Guardar</button></div></section>
+
+<section class="sec" id="s1"><div class="card"><b>🎯 Selector de objetivos</b><div class="row">
+<label>Base<select id="sb"><option>@p</option><option>@a</option><option>@r</option><option>@e</option><option>@s</option><option>@n</option></select></label>
+<label>Tipo entidad<input id="st" list="d_entities" placeholder="zombie"></label>
+<label>Nombre<input id="sn"></label><label>Tag<input id="sg"></label><label>Equipo (Java)<input id="sq"></label>
+<label>Distancia máx<input id="sd" type="number"></label><label>Distancia mín<input id="sdm" type="number"></label>
+<label>Modo juego<select id="sm"><option></option><option>survival</option><option>creative</option><option>adventure</option><option>spectator</option></select></label>
+<label>Nivel mín<input id="sl1" type="number"></label><label>Límite<input id="sc" type="number"></label>
+<label>Orden<select id="so"><option></option><option>nearest</option><option>furthest</option><option>random</option><option>arbitrary</option></select></label>
+<label>x y z<input id="sx" placeholder="0 64 0"></label><label>Puntuación (obj=min..max)<input id="ss" placeholder="puntos=1.."></label></div>
+<div class="out" id="so1"></div><button onclick="cp('so1')">📋 Copiar</button></div></section>
+
+<section class="sec" id="s2"><div class="card"><b>💬 Texto JSON / Rawtext</b><div class="row">
+<label>Texto<input id="jt" value="Hola mundo"></label><label>Color<select id="jc"></select></label>
+<label>Comando clic (opcional)<input id="jk" placeholder="/gamemode creative"></label><label>URL clic (Java)<input id="ju"></label>
+<label>Hover (Java)<input id="jh"></label><label>Objetivo<input id="jo" value="@a" list="d_sel"></label></div>
+<div class="chips"><label><input type="checkbox" id="jb" style="width:auto"> Negrita</label><label><input type="checkbox" id="ji" style="width:auto"> Cursiva</label><label><input type="checkbox" id="ju2" style="width:auto"> Subrayado</label><label><input type="checkbox" id="jst" style="width:auto"> Tachado</label><label><input type="checkbox" id="job" style="width:auto"> Ofuscado</label></div>
+<div class="out" id="jo1"></div><button onclick="cp('jo1')">📋 Copiar</button></div></section>
+
+<section class="sec" id="s3"><div class="card"><b>🗡 Ítem con NBT / Componentes / Encantamientos</b><div class="row">
+<label>Objetivo<input id="it" value="@p" list="d_sel"></label><label>Ítem<input id="ii" value="diamond_sword" list="d_items"></label><label>Cantidad<input id="ic" type="number" value="1"></label>
+<label>Nombre<input id="in"></label><label>Color nombre<select id="icl"></select></label><label>Lore (líneas)<textarea id="il" rows="2"></textarea></label>
+<label>Encantamientos (uno por línea: sharpness:5)<textarea id="ie" rows="3"></textarea></label><label>CustomModelData<input id="im" type="number"></label></div>
+<div class="chips"><label><input type="checkbox" id="iu" style="width:auto"> Irrompible</label><label><input type="checkbox" id="ik" style="width:auto"> Conservar al morir (Bedrock)</label><label><input type="checkbox" id="il2" style="width:auto"> Bloquear en inventario (Bedrock)</label></div>
+<label>Puede colocarse en (bloques, coma)<input id="ipl" list="d_blocks"></label>
+<div class="out" id="io"></div><button onclick="cp('io')">📋 Copiar</button><p class="hint">Java usa componentes (1.20.5+). Bedrock no admite nombre/encantos en give: se generan comandos extra.</p></div></section>
+
+<section class="sec" id="s4"><div class="card"><b>⚙ Constructor /execute</b><div id="xr"></div><button onclick="xadd()">➕ Añadir cláusula</button> <button onclick="xr.innerHTML='';xadd()">🗑 Limpiar</button>
+<label>Comando final (run)<input id="xrun" value="say hola" oninput="xg()"></label><div class="out" id="xo"></div><button onclick="cp('xo')">📋 Copiar</button></div></section>
+
+<section class="sec" id="s5">
+<div class="card"><b>🎨 Códigos de color y formato (§)</b><div id="cols"></div><p class="hint">Clic para copiar. Se usan en Bedrock y nombres/rawtext.</p></div>
+<div class="card"><b>🌍 Overworld ⇄ Nether / Chunk</b><div class="row"><label>X<input id="cx" type="number" value="0"></label><label>Z<input id="cz" type="number" value="0"></label></div><div class="out" id="cr"></div></div>
+<div class="card"><b>📦 Calculadora de stacks</b><div class="row"><label>Cantidad<input id="kn" type="number" value="1000"></label><label>Tamaño stack<select id="ks"><option>64</option><option>16</option><option>1</option></select></label></div><div class="out" id="kr"></div></div>
+<div class="card"><b>🧱 Bloques de comandos</b><p class="hint">Impulso (naranja), Cadena (verde), Repetitivo (morado). Condicional: sólo si el anterior tuvo éxito. Necesita Redstone o "Siempre activo". Usa /give @p command_block.<br>Java: <code>gamerule command_block_output false</code>; Bedrock: <code>gamerule commandblockoutput false</code>.</p></div>
+<div class="card"><b>🎲 Aleatorio</b><button onclick="rnd()">Comando aleatorio</button><div class="out" id="rr"></div></div></section>
+
+<section class="sec" id="s6"><div class="card"><b>🕘 Historial</b> <button onclick="H=[];hr()">Borrar</button><div class="list" id="hl"></div></div><div class="card"><b>⭐ Favoritos</b> <button id="fvc">Borrar</button><div class="list" id="fv"></div></div></section>
+<section class="sec" id="s7"><div class="card"><b>📦 Constructor de contenedores (cofres con ítems)</b>
+<div class="row" id="cC"><label>Contenedor<select id="cT"></select></label><label>Posición<input id="cP" value="~-2 ~ ~"></label><label>Nombre del contenedor<input id="cN"></label><label>Máx. caracteres por comando<input id="cM" type="number" min="500" value="15000"></label>
+<label>Formato encantos<select id="cF"><option value="n">1.21.5+ (enchantments={x:1})</option><option value="o">≤1.21.4 (levels:{})</option></select></label><label>Nombre del ítem usa<select id="cK"><option>custom_name</option><option>item_name</option></select></label>
+<label>Método Java<select id="cJ"><option value="s">setblock + Items (1 comando)</option><option value="r">item replace por ítem (más compatible)</option></select></label><label>Plantillas<select id="cPr"></select></label></div>
+<div class="chips"><button onclick="cpre()">📥 Cargar plantilla</button><button onclick="CI.push(mk(nxs(),'diamond_sword','',{},0));cr();cg()">➕ Añadir ítem</button><button onclick="CI=[];cr();cg()">🗑 Vaciar</button></div>
+<div id="cI"></div><div id="cO"></div><p class="hint">Niveles 1–255 (se limitan solos). Si el comando es muy largo se divide automáticamente: ejecútalos en orden, de arriba abajo.</p></div></section>
+<section class="sec" id="s8"><div class="card"><b>🐾 Generador de mobs</b><div class="row"><label>Plantilla<select id="mPre"></select></label>
+<label>Entidad<input id="mE" list="d_entities" value="zombie"></label><label>Posición<input id="mP" value="~ ~ ~"></label><label>Nombre<input id="mN"></label>
+<label>Bebé<select id="mB"><option value="">No</option><option value="z">Zombie/similar (IsBaby)</option><option value="a">Animal (Age)</option></select></label>
+<label>Evento (Bedrock)<input id="mB2" placeholder="minecraft:entity_spawned"></label><label>Passengers (coma)<input id="mS" list="d_entities" placeholder="skeleton,creeper"></label><label>Tags (coma)<input id="mT"></label><label>NBT extra (Java)<input id="mX" placeholder="Health:100f"></label></div>
+<div class="chips"><label><input type="checkbox" id="mV" style="width:auto"> Nombre visible</label>
+<label><input class="mf" type="checkbox" value="NoAI" style="width:auto"> NoAI</label><label><input class="mf" type="checkbox" value="Silent" style="width:auto"> Silencioso</label><label><input class="mf" type="checkbox" value="Invulnerable" style="width:auto"> Invulnerable</label><label><input class="mf" type="checkbox" value="Glowing" style="width:auto"> Brillo</label><label><input class="mf" type="checkbox" value="NoGravity" style="width:auto"> Sin gravedad</label><label><input class="mf" type="checkbox" value="PersistenceRequired" style="width:auto"> Persistente</label><label><input class="mf" type="checkbox" value="Invisible" style="width:auto"> Invisible</label></div>
+<b>Equipamiento</b><div class="row" id="mQ"></div>
+<div class="row"><label>Efectos (efecto:nivel:seg por línea)<textarea id="mF" rows="3" placeholder="speed:2:999999"></textarea></label><label>Atributos (nombre:valor por línea)<textarea id="mA" rows="3" placeholder="max_health:200&#10;scale:3"></textarea></label></div>
+<div id="mO"></div></div></section>
+
+<section class="sec" id="s9"><div class="card"><b>🚩 Diseñador de estandartes y escudos</b>
+<div class="row"><label>Objeto<select id="bI"><option value="banner">Estandarte</option><option value="shield">Escudo</option></select></label><label>Objetivo<input id="bT" value="@p" list="d_sel"></label><label>Patrón de la capa<select id="bP"></select></label></div>
+<p class="hint">Color base</p><div class="chips" id="bBs"></div><p class="hint">Color de la capa</p><div class="chips" id="bCs"></div>
+<div class="chips"><button id="bAd">➕ Añadir capa</button><button id="bUn">↩ Quitar última</button><button id="bCl">🗑 Limpiar</button></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><canvas id="bcv" width="200" height="400" style="width:120px;height:240px"></canvas><div style="flex:1;min-width:200px"><div id="bL"></div></div></div>
+<p class="hint">Vista previa aproximada.</p><div id="bO"></div><b>🧵 Proceso paso a paso</b><div id="bS"></div></div></section>
+<section class="sec" id="s10"><div class="card"><b>📖 Escritor de libros</b><div class="row"><label>Tipo<select id="kT"><option value="written_book">Libro firmado</option><option value="writable_book">Libro y pluma</option></select></label><label>Título<input id="kN" value="Mi libro" maxlength="32"></label><label>Autor<input id="kA" value="Steve"></label><label>Caracteres por página<input id="kS" type="number" value="250" min="50" max="1000"></label><label>Generación<select id="kG"><option value="0">Original</option><option value="1">Copia</option><option value="2">Copia de copia</option><option value="3">Rasgado</option></select></label><label style="display:flex;align-items:end;gap:5px"><input id="kC" type="checkbox" checked style="width:auto"> &amp;c → § (colores)</label></div>
+<label>Texto (separa páginas con una línea ---)<textarea id="kX" rows="8">Hola mundo&amp;l negrita&amp;r&#10;---&#10;Segunda página</textarea></label><div id="kO"></div><b>📄 Páginas (copiar y pegar en el libro)</b><div id="kP"></div></div></section>
+<section class="sec" id="s11"><div class="card"><b>🔨 Optimizador de yunque (ahorra XP)</b><p class="hint">Elige los encantamientos (libros). Compara aplicarlos uno por uno contra combinar los libros en árbol antes de usarlos en el ítem (Java).</p>
+<div class="chips"><button onclick="apre('PROT')">🛡 Armadura</button><button onclick="apre('ESP')">⚔ Espada</button><button onclick="apre('PICO')">⛏ Pico</button><button onclick="apre('ARCO')">🏹 Arco</button><button onclick="apre('')">Limpiar</button></div>
+<div class="row" id="aR"></div><div id="aO"></div></div>
+<div class="card"><b>💡 Mejores prácticas</b><ol><li>Combina libros entre sí en parejas del mismo "trabajo previo" antes de aplicarlos al ítem.</li><li>Cada uso del yunque duplica el coste futuro (2ⁿ−1): evita muchos pasos sobre el mismo ítem.</li><li>Primero compra/encanta libros con Mending, Protección y Unbreaking en aldeanos o mesa.</li><li>Un paso de 40+ niveles es "Demasiado caro" en supervivencia, no con comandos.</li><li>Con comandos no hay coste: usa <code>enchantments</code> (Java, hasta 255) o /enchant (Bedrock, nivel máx. vanilla).</li></ol></div></section>
+<section class="sec" id="s12"><div id="xt"></div></section>
+
+<section class="sec" id="s13"><div class="card"><b style="font-size:18px">⛏ Bienvenido</b><p class="hint" id="hw"></p></div><div class="hg" id="hm"></div></section>
+<section class="sec" id="s14"><div class="card"><b>📚 Referencia de IDs</b><div class="row"><label>Lista<select id="rS"></select></label><label>Buscar<input id="rQ"></label></div><p class="hint">Toca para copiar.</p><div id="rL" style="max-height:60vh;overflow:auto"></div></div></section>
+<section class="sec" id="s15"><div class="card"><b>🔷 Generador de formas</b><div class="row"><label>Forma<select id="fT"><option value="sph">Esfera</option><option value="dom">Domo</option><option value="cyl">Cilindro</option><option value="cir">Círculo plano</option><option value="pyr">Pirámide</option><option value="cub">Cubo</option><option value="lin">Línea</option></select></label>
+<label>Bloque<input id="fB" value="stone" list="d_blocks"></label><label>Radio / lado (1-32)<input id="fR" type="number" value="8"></label><label>Altura (cilindro)<input id="fH" type="number" value="10"></label><label>Centro<input id="fO" value="~ ~ ~"></label><label>Línea dx dy dz<input id="fL" value="10 5 0"></label><label style="display:flex;gap:5px;align-items:end"><input id="fHl" type="checkbox" checked style="width:auto"> Hueco</label></div>
+<div id="fOut"></div><p class="hint">Pega las líneas en un archivo .mcfunction (Java: datapack; Bedrock: behavior pack) o ejecútalas con /function.</p></div></section>
+<section class="sec" id="s16"><div class="card"><b>🧩 Visor de recetas de crafteo</b><div class="row"><label>Buscar<input id="vq"></label><label>Receta<select id="vS"></select></label></div><div id="vG"></div></div></section>
+<section class="sec" id="s17"><div class="card"><b>🕵 Roba-skins</b><label>Jugador<input id="kn" value="Notch"></label><div id="kv" style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0"></div><div id="kl"></div><div id="ko"></div><p class="hint">Las imágenes se cargan desde mc-heads.net (necesitas internet).</p></div></section>
+</main>
+<script>
+const $=i=>document.getElementById(i);
+const MX={sharpness:5,smite:5,bane_of_arthropods:5,knockback:2,fire_aspect:2,looting:3,sweeping_edge:3,efficiency:5,silk_touch:1,unbreaking:3,fortune:3,power:5,punch:2,flame:1,infinity:1,luck_of_the_sea:3,lure:3,loyalty:3,impaling:5,riptide:3,channeling:1,multishot:1,quick_charge:3,piercing:4,mending:1,protection:4,fire_protection:4,blast_protection:4,projectile_protection:4,feather_falling:4,respiration:3,aqua_affinity:1,thorns:3,depth_strider:3,frost_walker:2,soul_speed:3,swift_sneak:3,density:5,breach:4,wind_burst:3,binding_curse:1,vanishing_curse:1,lunge:3},BN2={binding_curse:'binding',vanishing_curse:'vanishing'};let ED='J',H=[],cur=null;
+const L={sel:"@p,@a,@r,@e,@s,@n",
+items:"diamond_sword,netherite_sword,iron_sword,diamond_pickaxe,netherite_pickaxe,diamond_axe,bow,crossbow,trident,mace,elytra,shield,totem_of_undying,golden_apple,enchanted_golden_apple,diamond,netherite_ingot,emerald,gold_ingot,iron_ingot,ender_pearl,firework_rocket,tnt,command_block,chain_command_block,repeating_command_block,structure_block,barrier,light,spawner,dragon_egg,written_book,name_tag,saddle,experience_bottle,potion,splash_potion,arrow,spectral_arrow,cooked_beef,bread,diamond_helmet,diamond_chestplate,diamond_leggings,diamond_boots,netherite_chestplate,wind_charge,breeze_rod,heavy_core,trial_key,ominous_trial_key,spyglass,compass,recovery_compass,filled_map,bundle,wolf_armor,copper_pickaxe,copper_sword,spear",
+blocks:"stone,dirt,grass_block,cobblestone,oak_planks,glass,obsidian,bedrock,air,water,lava,tnt,diamond_block,gold_block,iron_block,emerald_block,netherite_block,sand,gravel,oak_log,netherrack,end_stone,glowstone,sea_lantern,redstone_block,slime_block,honey_block,barrier,light,command_block,chest,crafting_table,furnace,beacon,spawner,copper_block,deepslate,tuff,crafter,vault,trial_spawner,pale_oak_log,resin_block,creaking_heart,cactus_flower",
+entities:"zombie,skeleton,creeper,spider,enderman,pig,cow,sheep,chicken,horse,villager,wandering_trader,iron_golem,snow_golem,wolf,cat,fox,panda,bee,axolotl,warden,wither,ender_dragon,blaze,ghast,piglin,hoglin,zoglin,phantom,drowned,husk,stray,vindicator,evoker,ravager,pillager,witch,slime,magma_cube,allay,frog,camel,sniffer,armadillo,breeze,bogged,creaking,happy_ghast,copper_golem,armor_stand,item,tnt,lightning_bolt,arrow,fireball,player,boat,minecart,text_display,block_display,item_display,marker,interaction",
+effects:"speed,slowness,haste,mining_fatigue,strength,instant_health,instant_damage,jump_boost,nausea,regeneration,resistance,fire_resistance,water_breathing,invisibility,blindness,night_vision,hunger,weakness,poison,wither,health_boost,absorption,saturation,glowing,levitation,luck,unluck,slow_falling,conduit_power,dolphins_grace,bad_omen,hero_of_the_village,darkness,trial_omen,raid_omen,wind_charged,weaving,oozing,infested",
+ench:"sharpness,smite,bane_of_arthropods,knockback,fire_aspect,looting,sweeping_edge,efficiency,silk_touch,unbreaking,fortune,power,punch,flame,infinity,luck_of_the_sea,lure,loyalty,impaling,riptide,channeling,multishot,quick_charge,piercing,mending,protection,fire_protection,blast_protection,projectile_protection,feather_falling,respiration,aqua_affinity,thorns,depth_strider,frost_walker,soul_speed,swift_sneak,density,breach,wind_burst,binding_curse,vanishing_curse,lunge",
+rulesJ:"keep_inventory,mob_griefing,advance_time,advance_weather,spawn_mobs,fire_spread,immediate_respawn,command_block_output,pvp,fall_damage,drowning_damage,fire_damage,freeze_damage,natural_health_regeneration,random_tick_speed,players_sleeping_percentage,max_command_chain_length,send_command_feedback,show_death_messages,spawn_radius,tnt_explodes,locator_bar,projectiles_can_break_blocks,forgiveness_of_dead_players,universal_anger,raids,spawn_patrols,spawn_wandering_traders,spawn_phantoms,spawn_wardens,limited_crafting,reduced_debug_info",
+rulesB:"keepInventory,mobGriefing,doDaylightCycle,doWeatherCycle,doMobSpawning,doFireTick,doImmediateRespawn,commandBlockOutput,pvp,fallDamage,drowningDamage,fireDamage,freezeDamage,naturalRegeneration,randomTickSpeed,playersSleepingPercentage,maxCommandChainLength,sendCommandFeedback,showDeathMessages,spawnRadius,tntExplodes,locatorBar,projectilesCanBreakBlocks,doInsomnia,doPatrolSpawning,doTraderSpawning,doEntityDrops,doMobLoot,doTileDrops,doLimitedCrafting,showCoordinates,showDaysPlayed,recipesUnlock,functionCommandLimit,commandBlocksEnabled",
+particles:"flame,smoke,heart,happy_villager,angry_villager,explosion,explosion_emitter,crit,enchant,end_rod,totem_of_undying,soul_fire_flame,cloud,dragon_breath,firework,note,portal,witch,bubble,snowflake,lava,glow,sculk_soul,cherry_leaves,pale_oak_leaves,trial_spawner_detection",
+sounds:"entity.player.levelup,entity.experience_orb.pickup,block.note_block.pling,entity.lightning_bolt.thunder,entity.ender_dragon.growl,ui.toast.challenge_complete,entity.generic.explode,block.anvil.land,music.game,entity.wither.spawn,entity.firework_rocket.blast"};
+L.rules=()=>L['rules'+ED];
+const COL={"0 negro":"000000","1 azul oscuro":"0000AA","2 verde oscuro":"00AA00","3 aqua oscuro":"00AAAA","4 rojo oscuro":"AA0000","5 morado":"AA00AA","6 dorado":"FFAA00","7 gris":"AAAAAA","8 gris oscuro":"555555","9 azul":"5555FF","a verde":"55FF55","b aqua":"55FFFF","c rojo":"FF5555","d rosa":"FF55FF","e amarillo":"FFFF55","f blanco":"FFFFFF"};
+const CN={"0":"black","1":"dark_blue","2":"dark_green","3":"dark_aqua","4":"dark_red","5":"dark_purple","6":"gold","7":"gray","8":"dark_gray","9":"blue","a":"green","b":"aqua","c":"red","d":"light_purple","e":"yellow","f":"white"};
+for(const k in L)if(typeof L[k]=="string"&&k.indexOf("rules")<0){const d=document.createElement("datalist");d.id="d_"+k+(k=="ench"?"":"");d.innerHTML=L[k].split(",").map(x=>`<option value="${x}">`).join("");document.body.appendChild(d)}
+["rulesJ","rulesB"].forEach(k=>{const d=document.createElement("datalist");d.id="d_"+k;d.innerHTML=L[k].split(",").map(x=>`<option value="${x}">`).join("");document.body.appendChild(d)});
+const SELF="target:Objetivo:t:@p:#sel",POS="pos:Posición:t:~ ~ ~",
+Z="Jugador",W="Mundo",E="Entidades",S="Score/Tags",A="Admin",X="Avanzado";
+const K=(n,c,ed,f,tj,tb)=>({n,c,ed,f:f?f.split("|").map(s=>{const a=s.split(":");return{k:a[0],l:a[1],t:a[2]||"t",d:a[3]||"",o:a[4]||""}}):[],tj,tb:tb||tj});
+const tx=(v,k)=>/^[{["]/.test(v)?v:JSON.stringify(v);
+const CM=[
+K("give",Z,"jb",SELF+"|item:Ítem:t:diamond:#items|count:Cantidad:n:1|data:Data (Bedrock):n","give {target} {item} {count}","give {target} {item} {count} {data}"),
+K("gamemode",Z,"jb","mode:Modo:s:creative:survival,creative,adventure,spectator|"+SELF,"gamemode {mode} {target}"),
+K("effect give",Z,"jb",SELF+"|eff:Efecto:t:speed:#effects|sec:Segundos:n:30|amp:Nivel (0=I):n:0|hide:Ocultar partículas:s::,true,false","effect give {target} {eff} {sec} {amp} {hide}","effect {target} {eff} {sec} {amp} {hide}"),
+K("effect clear",Z,"jb",SELF+"|eff:Efecto (vacío=todos):t::#effects","effect clear {target} {eff}","effect {target} clear {eff}"),
+K("enchant",Z,"jb",SELF+"|e:Encantamiento:t:sharpness:#ench|l:Nivel:n:1","enchant {target} {e} {l}"),
+K("xp",Z,"jb",SELF+"|n:Cantidad:n:10|ty:Tipo:s:points:points,levels","xp add {target} {n} {ty}",v=>`xp ${v.n}${v.ty=="levels"?"L":""} ${v.target}`),
+K("clear",Z,"jb",SELF+"|item:Ítem (vacío=todo):t::#items|max:Máx:n","clear {target} {item} {max}"),
+K("kill",Z,"jb",SELF+"|","kill {target}"),
+K("tp / teleport",Z,"jb",SELF+"|pos:Destino x y z o jugador:t:~ ~ ~|rot:Rotación yaw pitch:t:","tp {target} {pos} {rot}"),
+K("spawnpoint",Z,"jb",SELF+"|"+POS,"spawnpoint {target} {pos}"),
+K("ability",Z,"b",SELF+"|a:Habilidad:s:mayfly:mayfly,mute,worldbuilder|v:Valor:s:true:true,false","","ability {target} {a} {v}"),
+K("damage",Z,"j",SELF+"|n:Daño:n:5|ty:Tipo:t::","damage {target} {n} {ty}"),
+K("time set",W,"jb","v:Valor:t:day:day,night,noon,midnight,sunrise,sunset","time set {v}"),
+K("time add",W,"jb","n:Ticks:n:1000","time add {n}"),
+K("weather",W,"jb","w:Clima:s:clear:clear,rain,thunder|dur:Duración (seg/ticks):n","weather {w} {dur}"),
+K("difficulty",W,"jb","d:Dificultad:s:normal:peaceful,easy,normal,hard","difficulty {d}"),
+K("gamerule",W,"jb","r:Regla:t:keep_inventory:#rules|v:Valor:t:true","gamerule {r} {v}"),
+K("setblock",W,"jb",POS+"|b:Bloque:t:stone:#blocks|m:Modo:s::,replace,destroy,keep","setblock {pos} {b} {m}"),
+K("fill",W,"jb","p1:Desde:t:~ ~ ~|p2:Hasta:t:~5 ~5 ~5|b:Bloque:t:stone:#blocks|m:Modo:s::replace,destroy,hollow,keep,outline|f:Filtro (con replace):t::#blocks","fill {p1} {p2} {b} {m} {f}"),
+K("clone",W,"jb","p1:Desde:t:~ ~ ~|p2:Hasta:t:~5 ~5 ~5|d:Destino:t:~10 ~ ~|mk:Máscara:s::replace,masked,filtered|m:Modo:s::normal,force,move","clone {p1} {p2} {d} {mk} {m}"),
+K("setworldspawn",W,"jb",POS,"setworldspawn {pos}"),
+K("locate",W,"jb","k:Tipo:s:structure:structure,biome,poi|n:Nombre:t:village","locate {k} {n}","locate {k} {n}"),
+K("fillbiome",W,"j","p1:Desde:t:~ ~ ~|p2:Hasta:t:~10 ~10 ~10|b:Bioma:t:plains","fillbiome {p1} {p2} {b}"),
+K("place",W,"j","k:Tipo:s:feature:feature,structure,jigsaw,template|n:Nombre:t:minecraft:oak|"+POS,"place {k} {n} {pos}"),
+K("forceload",W,"j","a:Acción:s:add:add,remove,query|x:x z:t:0 0","forceload {a} {x}"),
+K("worldborder",W,"j","a:Acción:s:set:set,add,center,get,damage amount,warning distance|v:Valor:t:1000|t:Tiempo (seg):n","worldborder {a} {v} {t}"),
+K("tick",W,"j","a:Acción:s:rate:rate,freeze,unfreeze,step,query|v:Valor:t:20","tick {a} {v}"),
+K("structure",W,"b","a:Acción:s:save:save,load,delete|n:Nombre:t:mi_estructura|p1:Posición/Desde:t:~ ~ ~|p2:Hasta (save):t:~5 ~5 ~5","","structure {a} {n} {p1} {p2}"),
+K("mobevent",W,"b","e:Evento:t:minecraft:pillager_patrols_event|v:Valor:s:true:true,false","","mobevent {e} {v}"),
+K("fog",W,"b",SELF+"|a:Acción:s:push:push,pop,remove|f:Niebla:t:minecraft:fog_hell|id:ID:t:miniebla","","fog {target} {a} {f} {id}"),
+K("summon",E,"jb","e:Entidad:t:zombie:#entities|"+POS+"|nbt:NBT (Java) {CustomName:'\"X\"'}:t|ev:Evento (Bedrock):t|nm:Nombre (Bedrock):t","summon {e} {pos} {nbt}",v=>`summon ${v.e} ${v.pos}`+(v.ev||v.nm?` ~ ~ ${v.ev||"minecraft:entity_spawned"} ${v.nm?'"'+v.nm+'"':""}`:"")),
+K("ride",E,"jb","a:Entidad:t:@s|m:Acción:s:mount:mount,dismount|b:Montura:t:@e[type=horse,limit=1]","ride {a} {m} {b}","ride {a} start_riding {b}"),
+K("event entity",E,"b",SELF+"|ev:Evento:t:minecraft:ageable_grow_up","","event entity {target} {ev}"),
+K("spreadplayers",E,"jb","c:Centro x z:t:0 0|d:Dist. mín:n:5|r:Radio máx:n:100|t:Equipos:s:false:false,true|"+SELF,"spreadplayers {c} {d} {r} {t} {target}"),
+K("attribute",E,"j",SELF+"|a:Atributo:t:max_health|m:Acción:s:base set:base set,base get,get,modifier add|v:Valor:t:40","attribute {target} {a} {m} {v}"),
+K("data get/merge",E,"j","a:Acción:s:merge:get,merge,remove|k:Tipo:s:entity:entity,block,storage|t:Objetivo:t:@s|n:NBT/Ruta:t:{NoAI:1b}","data {a} {k} {t} {n}"),
+K("item replace",E,"j",SELF+"|slot:Slot:t:weapon.mainhand|item:Ítem:t:diamond_sword:#items","item replace entity {target} {slot} with {item}"),
+K("replaceitem",E,"b",SELF+"|slot:Slot:s:slot.weapon.mainhand:slot.weapon.mainhand,slot.weapon.offhand,slot.armor.head,slot.armor.chest,slot.armor.legs,slot.armor.feet,slot.hotbar,slot.inventory|n:Índice:n:0|item:Ítem:t:diamond_sword:#items|c:Cantidad:n:1","","replaceitem entity {target} {slot} {n} {item} {c}"),
+K("playanimation",E,"b",SELF+"|a:Animación:t:animation.player.dance|","","playanimation {target} {a}"),
+K("scoreboard objectives add",S,"jb","n:Objetivo:t:puntos|c:Criterio:t:dummy|d:Nombre visible:t","scoreboard objectives add {n} {c} {d}"),
+K("scoreboard players",S,"jb","a:Acción:s:set:set,add,remove,reset,get|"+SELF+"|o:Objetivo:t:puntos|v:Valor:n:1","scoreboard players {a} {target} {o} {v}"),
+K("scoreboard setdisplay",S,"jb","s:Lugar:s:sidebar:sidebar,list,belowname|o:Objetivo:t:puntos","scoreboard objectives setdisplay {s} {o}"),
+K("tag",S,"jb",SELF+"|a:Acción:s:add:add,remove|t:Tag:t:vip","tag {target} {a} {t}"),
+K("team",S,"j","a:Acción:s:add:add,remove,join,modify|t:Equipo:t:rojo|m:Miembro/Opción:t:@a","team {a} {t} {m}"),
+K("bossbar",S,"j","a:Acción:s:add:add,set,remove,list|id:ID:t:minecraft:jefe|n:Valor/Nombre:t:\"Jefe\"","bossbar {a} {id} {n}"),
+K("trigger",S,"j","o:Objetivo:t:ayuda|a:Acción:s::,add,set|v:Valor:n:1","trigger {o} {a} {v}"),
+K("tellraw / titleraw",X,"jb",SELF+"|m:Mensaje:t:Hola","tellraw {target} "+"{m}",v=>`tellraw ${v.target} {"rawtext":[{"text":${JSON.stringify(v.m)}}]}`),
+K("title",X,"jb",SELF+"|k:Tipo:s:title:title,subtitle,actionbar,clear,reset,times|m:Texto:t:¡Bienvenido!","title {target} {k} {m}"),
+K("say / me / msg",X,"jb","c:Comando:s:say:say,me,msg,tell,w|"+SELF+"|m:Texto:t:Hola","{c} {target} {m}"),
+K("playsound",X,"jb","s:Sonido:t:entity.player.levelup:#sounds|src:Fuente (Java):s:master:master,music,record,weather,block,hostile,neutral,player,ambient,voice|"+SELF+"|"+POS+"|v:Volumen:n:1|p:Tono:n:1","playsound {s} {src} {target} {pos} {v} {p}","playsound {s} {target} {pos} {v} {p}"),
+K("particle",X,"jb","p:Partícula:t:flame:#particles|"+POS+"|dl:Delta dx dy dz:t:0 0 0|sp:Velocidad:n:0|n:Cantidad:n:10|m:Modo:s::normal,force","particle {p} {pos} {dl} {sp} {n} {m}","particle {p} {pos}"),
+K("function / schedule",X,"jb","f:Función:t:mi:funcion","function {f}"),
+K("random",X,"j","a:Acción:s:value:value,roll|r:Rango:t:1..100","random {a} {r}"),
+K("camera",X,"b",SELF+"|a:Acción:s:fade:fade,clear,set|p:Parámetros:t:time 1 2 1 color 0 0 0","","camera {target} {a} {p}"),
+K("camerashake",X,"b",SELF+"|a:Acción:s:add:add,stop|i:Intensidad:n:1|s:Segundos:n:2","","camerashake {a} {target} {i} {s}"),
+K("hud",X,"b",SELF+"|a:Acción:s:hide:hide,reset|e:Elemento:t:all","","hud {target} {a} {e}"),
+K("inputpermission",X,"b",SELF+"|a:Acción:s:set:query,set|p:Permiso:t:movement|s:Estado:s:disabled:enabled,disabled","","inputpermission {a} {target} {p} {s}"),
+K("scriptevent",X,"b","id:ID:t:mi:evento|m:Mensaje:t","","scriptevent {id} {m}"),
+K("dialogue",X,"b","a:Acción:s:open:open,change|n:NPC:t:@e[type=npc,limit=1]|"+SELF+"|s:Escena:t","","dialogue {a} {n} {target} {s}"),
+K("dialog",X,"j",SELF+"|d:Diálogo:t:minecraft:mi_dialogo","dialog show {target} {d}"),
+K("op",A,"jb",SELF.replace("@p","Jugador"),"op {target}"),K("deop",A,"jb",SELF.replace("@p","Jugador"),"deop {target}"),
+K("kick",A,"jb",SELF+"|r:Razón:t","kick {target} {r}"),K("ban",A,"jb","target:Jugador:t:|r:Razón:t","ban {target} {r}"),K("pardon",A,"j","target:Jugador:t:","pardon {target}"),
+K("whitelist / allowlist",A,"jb","a:Acción:s:add:add,remove,list,on,off,reload|target:Jugador:t:","whitelist {a} {target}","allowlist {a} {target}"),
+K("defaultgamemode",A,"jb","m:Modo:s:survival:survival,creative,adventure,spectator","defaultgamemode {m}"),
+K("seed / list / reload",A,"jb","c:Comando:s:seed:seed,list,reload,save-all,stop,publish","{c}"),
+K("transfer",A,"j","h:Host:t:ejemplo.com|p:Puerto:n:25565","transfer {h} {p}"),
+K("setmaxplayers",A,"b","n:Máx:n:10","","setmaxplayers {n}")];
+CM.forEach(c=>c.f=c.f.filter(f=>f.k));
+const CATS=[Z,W,E,S,X,A],ES=()=>"jb".includes(ED=="J"?"j":"b");
+let cat="";
+const av=c=>c.ed.includes(ED.toLowerCase());
+function lst(){const q=$("q").value.toLowerCase();$("cats").innerHTML=[["Todas",""],...CATS.map(x=>[x,x])].map(([a,b])=>`<button class="${cat==b?"on":""}" onclick="cat='${b}';lst()">${a}</button>`).join("");
+$("cl").innerHTML=CM.filter(c=>av(c)&&(!cat||c.c==cat)&&c.n.toLowerCase().includes(q)).map(c=>`<button onclick="pick(${CM.indexOf(c)})">/${c.n}<span class="tag">${c.c}</span>${c.ed.length==1?`<span class="tag">${c.ed=="j"?"Java":"Bedrock"}</span>`:""}</button>`).join("")}
+function pick(i){cur=CM[i];$("cn").textContent="/"+cur.n;$("ff").innerHTML=cur.f.map(f=>{let o=f.o,h;if(f.t=="s"){h=`<select data-k="${f.k}">${o.split(",").map(x=>`<option ${x==f.d?"selected":""}>${x}</option>`).join("")}</select>`}else{const l=o[0]=="#"?` list="d_${o=="#rules"?"rules"+ED:o.slice(1)}"`:"";h=`<input data-k="${f.k}" type="${f.t=="n"?"number":"text"}" value="${f.d}"${l}>`}return`<label>${f.l}${h}</label>`}).join("");$("ff").oninput=gen;gen()}
+function gen(){if(!cur)return;const v={};document.querySelectorAll("#ff [data-k]").forEach(e=>v[e.dataset.k]=e.value.trim());let t=ED=="J"?cur.tj:cur.tb,r=typeof t=="function"?t(v):t.replace(/\{(\w+)\}/g,(m,k)=>v[k]||"");r=r.replace(/\s+/g," ").trim();$("co").textContent=P(r);hist(P(r))}
+const P=s=>($("sl").checked?"/":"")+s;let lastH="";
+function hist(s){clearTimeout(window._h);window._h=setTimeout(()=>{if(s&&s!=lastH){lastH=s;H.unshift(s);H=H.slice(0,50);hr()}},1200)}
+function hr(){$("hl").innerHTML=H.map(h=>`<button onclick="nav2(this)">${h.replace(/</g,"&lt;")}</button>`).join("")||"<span class=hint>Vacío</span>"}
+function nav2(b){navigator.clipboard&&navigator.clipboard.writeText(b.textContent);b.style.borderColor="#5ac33f"}
+function cp(id){const t=$(id).textContent;navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast()):0}function toast(){document.title="✅ Copiado";setTimeout(()=>document.title="⛏ Generador Absoluto de Comandos Minecraft",1200)}
+// Selector
+function sel(){const j=ED=="J",a=[],v=i=>$(i).value.trim();
+if(v("st"))a.push("type="+(j?"minecraft:":"")+v("st"));if(v("sn"))a.push('name="'+v("sn")+'"');if(v("sg"))a.push("tag="+v("sg"));if(j&&v("sq"))a.push("team="+v("sq"));
+if(v("sd"))a.push((j?"distance=..":"r=")+v("sd"));if(v("sdm"))a.push(j?"distance="+v("sdm")+"..":"rm="+v("sdm"));
+if(v("sm"))a.push((j?"gamemode=":"m=")+v("sm"));if(v("sl1"))a.push((j?"level=":"l=")+v("sl1")+(j?"..":""));if(v("sc"))a.push((j?"limit=":"c=")+v("sc"));
+if(v("so"))a.push("sort="+v("so"));if(v("sx")){const p=v("sx").split(/\s+/);["x","y","z"].forEach((k,i)=>p[i]&&a.push(k+"="+p[i]))}
+if(v("ss"))a.push((j?"scores={":"scores={")+v("ss")+"}");$("so1").textContent=v("sb")+(a.length?"["+a.join(",")+"]":"")}
+// JSON
+function jsn(){const j=ED=="J",t=$("jt").value,c=$("jc").value,o={text:t};if(c)o.color=c;[["jb","bold"],["ji","italic"],["ju2","underlined"],["jst","strikethrough"],["job","obfuscated"]].forEach(([i,k])=>$(i).checked&&(o[k]=true));
+if($("jk").value)o.click_event={action:"run_command",command:$("jk").value};else if($("ju").value)o.click_event={action:"open_url",url:$("ju").value};if($("jh").value)o.hover_event={action:"show_text",value:$("jh").value};
+let out;if(j)out=`tellraw ${$("jo").value} ${JSON.stringify(o)}`;else{const k=Object.keys(CN).find(x=>CN[x]==c),f=(k?"§"+k:"")+($("jb").checked?"§l":"")+($("ji").checked?"§o":"")+($("job").checked?"§k":"");out=`tellraw ${$("jo").value} ${JSON.stringify({rawtext:[{text:f+t+(f?"§r":"")}]})}`}$("jo1").textContent=P(out)}
+// Item
+function itm(){const j=ED=="J",v=i=>$(i).value.trim(),T=v("it"),I=v("ii"),C=v("ic")||1,en=v("ie").split("\n").map(s=>s.trim()).filter(Boolean);let r;
+if(j){const p=[];if(v("in"))p.push(`custom_name={text:${JSON.stringify(v("in"))},italic:false${v("icl")?",color:"+JSON.stringify(v("icl")):""}}`);
+const lo=v("il").split("\n").filter(Boolean);if(lo.length)p.push("lore=["+lo.map(l=>`{text:${JSON.stringify(l)},italic:false}`).join(",")+"]");
+if(en.length)p.push("enchantments={"+en.map(e=>{const a=e.split(":");return`"minecraft:${a[0].trim()}":${Math.min(255,Math.max(1,+a[1]||1))}`}).join(",")+"}");if($("iu").checked)p.push("unbreakable={}");if(v("im"))p.push(`custom_model_data={floats:[${v("im")}f]}`);
+if(v("ipl"))p.push(`can_place_on={blocks:[${v("ipl").split(",").map(b=>JSON.stringify("minecraft:"+b.trim())).join(",")}]}`);
+r=`give ${T} ${I}${p.length?"["+p.join(",")+"]":""} ${C}`}else{const o={};if(v("ipl"))o.can_place_on={blocks:v("ipl").split(",").map(b=>b.trim())};if($("il2").checked)o.item_lock={mode:"lock_in_inventory"};if($("ik").checked)o.keep_on_death={};
+r=`give ${T} ${I} ${C} 0${Object.keys(o).length?" "+JSON.stringify(o):""}`+en.map(e=>{const a=e.split(":");const k=a[0].trim();return k=='sweeping_edge'?'':`\n/enchant ${T} ${BN2[k]||k} ${Math.min(+a[1]||1,MX[k]||1)}`}).join("")}$("io").textContent=P(r).replace(/\n\//g,$("sl").checked?"\n/":"\n")}
+// Execute
+const XK="as,at,positioned,rotated,facing,in,align,anchored,if block,unless block,if entity,unless entity,if score,unless score,if biome,as @a at @s".split(",");
+function xadd(){const d=document.createElement("div");d.className="row";d.style.marginBottom="6px";d.innerHTML=`<select onchange="xg()">${XK.map(k=>`<option>${k}</option>`).join("")}</select><input placeholder="argumentos (ej: @a / ~ ~-1 ~ stone)" oninput="xg()">`;$("xr").appendChild(d);xg()}
+function xg(){const p=[...$("xr").children].map(d=>(d.children[0].value+" "+d.children[1].value).trim());$("xo").textContent=P(`execute ${p.join(" ")} run ${$("xrun").value}`.replace(/\s+/g," "))}
+// Tools
+function tl(){const x=+$("cx").value,z=+$("cz").value;$("cr").textContent=`Overworld→Nether: ${Math.floor(x/8)}, ${Math.floor(z/8)}\nNether→Overworld: ${x*8}, ${z*8}\nChunk: ${x>>4}, ${z>>4} · Región: ${x>>9}, ${z>>9}\nDentro del chunk: ${x&15}, ${z&15}`;
+const n=+$("kn").value,s=+$("ks").value;$("kr").textContent=`${Math.floor(n/s)} stacks + ${n%s} · Cofres dobles: ${(n/(s*54)).toFixed(2)} · Shulkers: ${(n/(s*27)).toFixed(2)}`}
+function rnd(){const c=CM.filter(av);const i=CM.indexOf(c[Math.random()*c.length|0]);pick(i);$("rr").textContent=$("co").textContent}
+// Init
+const SEC=["⌨ Comandos","🎯 Selector","💬 JSON","🗡 Ítem NBT","⚙ Execute","🧰 Herramientas","🕘 Historial","📦 Cofres","🐾 Summon","🚩 Estandarte/Escudo","📖 Libros","🔨 Yunque XP","🎁 Extras"];
+$("nav").innerHTML=SEC.map((s,i)=>`<button onclick="tab(${i})">${s}</button>`).join("");
+function tab(i){document.querySelectorAll(".sec").forEach((e,k)=>e.classList.toggle("on",k==i));[...$("nav").children].forEach((b,k)=>b.classList.toggle("on",k==i))}
+const co=Object.entries(CN).map(([k,v])=>`<option value="${v}">${v}</option>`).join("");$("jc").innerHTML="<option></option>"+co;$("icl").innerHTML="<option></option>"+co;
+$("cols").innerHTML=Object.entries(COL).map(([k,v])=>`<span class="cc" style="background:#${v}" onclick="navigator.clipboard.writeText('§${k[0]}')" title="${k}">§${k[0]}</span>`).join("")+["k ofuscado","l negrita","m tachado","n subrayado","o cursiva","r reset"].map(x=>`<span class="cc" style="background:#ddd;width:auto;padding:0 6px" onclick="navigator.clipboard.writeText('§${x[0]}')">§${x}</span>`).join("");
+function setEd(e){ED=e;$("eJ").classList.toggle("on",e=="J");$("eB").classList.toggle("on",e=="B");lst();cur=null;$("cn").textContent="Elige un comando";$("ff").innerHTML="";$("co").textContent="";sel();jsn();itm();xg();tl()}
+$("eJ").onclick=()=>setEd("J");$("eB").onclick=()=>setEd("B");$("sl").onchange=()=>{gen();sel();jsn();itm();xg()};$("q").oninput=lst;
+["s1","s2","s3","s5"].forEach(id=>$(id).addEventListener("input",()=>{sel();jsn();itm();tl()}));
+xadd();setEd("J");tab(0);hr();
+</script><script>
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const CT={chest:27,trapped_chest:27,barrel:27,shulker_box:27,hopper:5,dispenser:9,dropper:9,crafter:9,furnace:3,smoker:3,blast_furnace:3,chiseled_bookshelf:6,brewing_stand:5};
+const EN=L.ench.split(",");
+[["trm","amethyst,copper,diamond,emerald,gold,iron,lapis,netherite,quartz,redstone,resin"],["trp","sentry,dune,coast,wild,ward,eye,vex,tide,snout,rib,spire,wayfinder,shaper,silence,raiser,host,flow,bolt"]].forEach(([k,v])=>{const d=document.createElement("datalist");d.id="d_"+k;d.innerHTML=v.split(",").map(x=>`<option value="${x}">`).join("");document.body.appendChild(d)});
+$("cT").innerHTML=Object.keys(CT).map(k=>`<option>${k}</option>`).join("");
+const ar=(o,l)=>Object.fromEntries(o.split(",").map(x=>[x,l])),ALLE=ar(EN.join(","),255),PROT="protection,fire_protection,blast_protection,projectile_protection";
+const M=(o,l=255)=>({...ar(o,l),unbreaking:255,mending:1}),SK={efficiency:255,silk_touch:1,unbreaking:255,mending:1};
+const mk=(s,id,nm,en,tr)=>({s,id,n:1,nm,col:"",lo:"",u:1,g:0,cm:"",tm:tr?"redstone":"",tp:tr?"silence":"",en:en||{},x:""});
+const PR={"Cofre 1: Administración":[mk(0,"command_block","Comando Definitivo",ALLE),mk(1,"structure_block","Estructura Suprema",ALLE),mk(2,"barrier","Barrera Absoluta",ALLE),mk(3,"bedrock","Bedrock Divina",ALLE)],
+"Cofre 2: Herramientas del Caos":[mk(0,"debug_stick","Palo de Bug Supreme",ALLE),mk(1,"blaze_rod","Vara Monstruosa",M("sharpness")),mk(2,"stick","Palo del Destierro",M("knockback"))],
+"Cofre 3: Armadura Netherita":[mk(0,"netherite_helmet","Casco de Netherita",M(PROT+",respiration,aqua_affinity,thorns"),1),mk(1,"netherite_chestplate","Pechera de Netherita",M(PROT+",thorns"),1),mk(2,"netherite_leggings","Pantalones de Netherita",M(PROT+",swift_sneak,thorns"),1),mk(3,"netherite_boots","Botas de Netherita",M(PROT+",feather_falling,depth_strider,frost_walker,soul_speed,thorns"),1)],
+"Cofre 4: Armas y Herramientas":[mk(0,"netherite_sword","Espada Suprema",M("sharpness,smite,bane_of_arthropods,fire_aspect,looting,sweeping_edge")),mk(1,"netherite_axe","Hacha de Guerra",M("sharpness,efficiency,fortune")),mk(2,"netherite_pickaxe","Pico de Fortuna",M("efficiency,fortune")),mk(3,"netherite_pickaxe","Pico de Seda",{...SK}),mk(4,"netherite_shovel","Pala de Fortuna",M("efficiency,fortune")),mk(5,"netherite_shovel","Pala de Seda",{...SK}),mk(6,"netherite_hoe","Azada de Fortuna",M("efficiency,fortune")),mk(7,"netherite_hoe","Azada de Seda",{...SK})],
+"Cofre 5: Élitras y Armamento":[mk(0,"elytra","Élitras Supremas",M(PROT),1),mk(1,"mace","Mazo Definitivo",M("density,breach,wind_burst,sharpness,fire_aspect")),mk(2,"trident","Tridente Supremo",M("loyalty,riptide,channeling,impaling")),mk(3,"bow","Arco Definitivo",M("power,punch,flame,infinity")),mk(4,"crossbow","Ballesta Definitiva",M("multishot,piercing,quick_charge")),mk(5,"shield","Escudo Absoluto",{unbreaking:255,mending:1}),mk(6,"fishing_rod","Caña Suprema",M("luck_of_the_sea,lure"))]};
+$("cPr").innerHTML=Object.keys(PR).map(k=>`<option>${k}</option>`).join("");
+let CI=JSON.parse(JSON.stringify(PR["Cofre 1: Administración"]));
+const nxs=()=>CI.reduce((a,o)=>Math.max(a,o.s+1),0);
+function cpre(){CI=JSON.parse(JSON.stringify(PR[$("cPr").value]));cr();cg()}
+const cI=$("cI");
+function cr(){const op=[...cI.querySelectorAll("details")].map(d=>d.open);
+cI.innerHTML=CI.map((o,i)=>{const d=`data-i="${i}"`,t=(f,l,x="")=>`<label>${l}<input ${d} data-f="${f}" value="${esc(o[f])}" ${x}></label>`;
+return`<div class="card" style="border-color:#5ac33f"><div class="row">${t("s","Slot",'type="number" min="0"')}${t("id","Ítem",'list="d_items"')}${t("n","Cant.",'type="number" min="1" max="99"')}${t("nm","Nombre")}
+<label>Color<select ${d} data-f="col"><option></option>${Object.values(CN).map(c=>`<option ${o.col==c?"selected":""}>${c}</option>`).join("")}</select></label>
+<label>Lore (1 línea = 1 renglón)<textarea ${d} data-f="lo" rows="2">${esc(o.lo)}</textarea></label>${t("tm","Trim material",'list="d_trm"')}${t("tp","Trim patrón",'list="d_trp"')}${t("cm","CustomModelData",'type="number"')}${t("x","Componentes extra (SNBT)",'placeholder="max_damage:5000"')}</div>
+<div class="chips"><label><input type="checkbox" ${d} data-f="u" ${o.u?"checked":""} style="width:auto"> Irrompible</label><label><input type="checkbox" ${d} data-f="g" ${o.g?"checked":""} style="width:auto"> Brillo forzado</label></div>
+<details ${op[i]?"open":""}><summary>✨ Encantamientos (${Object.keys(o.en).length})</summary><div class="chips"><button ${d} data-a="all">Seleccionar todos</button><button ${d} data-a="max">Todos a 255</button><button ${d} data-a="none">Ninguno</button><input type="number" id="lv${i}" min="1" max="255" value="255" style="width:80px"><button ${d} data-a="set">Aplicar nivel a marcados</button></div>
+<div class="row">${EN.map(e=>{const c=e in o.en;return`<label style="display:flex;gap:5px;align-items:center"><input type="checkbox" ${d} data-f="ck" data-e="${e}" ${c?"checked":""} style="width:auto">${e}${c?`<input type="number" min="1" max="255" ${d} data-f="lv" data-e="${e}" value="${o.en[e]}" style="width:70px">`:""}</label>`}).join("")}</div></details>
+<button ${d} data-a="dup">⧉ Duplicar</button> <button ${d} data-a="del">🗑 Quitar</button></div>`}).join("")}
+function h(e){const t=e.target,i=t.dataset.i,f=t.dataset.f;if(i==null||!f)return;const o=CI[i];
+if(f=="lv"){if(t.value!==""){let v=Math.max(1,Math.min(255,parseInt(t.value)||1));if(String(v)!==t.value)t.value=v;o.en[t.dataset.e]=v}}
+else if(f=="ck"){if(e.type!="change")return;if(t.checked)o.en[t.dataset.e]=o.en[t.dataset.e]||1;else delete o.en[t.dataset.e];cr()}
+else if(t.type=="checkbox")o[f]=t.checked?1:0;else o[f]=(f=="s"||f=="n")?+t.value:t.value;cg()}
+cI.addEventListener("input",h);cI.addEventListener("change",h);
+cI.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const i=+b.dataset.i,o=CI[i],a=b.dataset.a;
+if(a=="del")CI.splice(i,1);else if(a=="dup"){const c=JSON.parse(JSON.stringify(o));c.s=nxs();CI.splice(i+1,0,c)}else if(a=="all")EN.forEach(x=>o.en[x]=o.en[x]||1);else if(a=="none")o.en={};else if(a=="max")EN.forEach(x=>o.en[x]=255);else if(a=="set"){const v=Math.max(1,Math.min(255,+$("lv"+i).value||1));for(const k in o.en)o.en[k]=v}cr();cg()});
+function jI(o,cmd){const P2=[],K=$("cK").value,en=Object.entries(o.en),q=k=>cmd?k:`"minecraft:${k}"`,add=(k,v)=>P2.push(q(k)+(cmd?"=":":")+v);
+if(o.nm)add(K,`{text:${JSON.stringify(o.nm)}${K=="custom_name"?",italic:false":""}${o.col?`,color:"${o.col}"`:""}}`);
+if(o.lo)add("lore","["+o.lo.split("\n").filter(Boolean).map(l=>`{text:${JSON.stringify(l)},italic:false}`).join(",")+"]");
+if(en.length){const b=en.map(([k,v])=>`"minecraft:${k}":${Math.min(255,Math.max(1,v))}`).join(",");add("enchantments",$("cF").value=="n"?`{${b}}`:`{levels:{${b}}}`)}
+if(o.tm&&o.tp)add("trim",`{material:"minecraft:${o.tm}",pattern:"minecraft:${o.tp}"}`);
+if(o.u)add("unbreakable","{}");if(o.g)add("enchantment_glint_override","true");if(o.cm!=="")add("custom_model_data",`{floats:[${o.cm}f]}`);if(o.x)P2.push(o.x);
+return cmd?`minecraft:${o.id}${P2.length?"["+P2.join(",")+"]":""}`:`{Slot:${o.s}b,id:"minecraft:${o.id}",count:${o.n}${P2.length?",components:{"+P2.join(",")+"}":""}}`}
+function rl(el,cmds,warn,u){u=u||"comando(s) — ejecútalos en orden";window["C_"+el.id]=cmds;el.innerHTML=(warn.length?`<p class="hint">⚠ ${[...new Set(warn)].join(" · ")}</p>`:"")+`<p class="hint">${cmds.filter(c=>c[0]!="#").length} ${u}</p>`+cmds.map((c,i)=>c.startsWith("#c ")?`<p class="hint"><span class="sw" style="display:inline-block;background:${esc(c.slice(3).split(" ")[0])}"></span> <b>${esc(c.slice(3))}</b></p>`:c[0]=="#"?`<p class="hint"><b>${esc(c.slice(2))}</b></p>`:`<div class="out">${esc(c)}</div><button onclick="navigator.clipboard.writeText(window.C_${el.id}[${i}]);toast()">📋 Copiar #${i+1} (${c.length} car.)</button>`).join("")}
+function cg(){const j=ED=="J",ty=$("cT").value,mx=CT[ty],pos=$("cP").value.trim()||"~ ~ ~",lim=Math.max(500,+$("cM").value||15000),w=[],cmds=[];
+const it=CI.filter(o=>o.id&&(o.s>=0&&o.s<mx||w.push(`Slot ${o.s} fuera de rango (0-${mx-1}) para ${ty}`)&&0));
+if(j){const S=it.map(jI),nm=$("cN").value.trim(),hd=`setblock ${pos} minecraft:${ty}{${nm?`CustomName:{text:${JSON.stringify(nm)}},`:""}Items:[`;let f=[],len=hd.length+2,k=0;
+while(k<S.length&&(!f.length||len+S[k].length+1<=lim)){f.push(S[k]);len+=S[k].length+1;k++}
+if($("cJ").value=="r"){const nm2=nm?`{CustomName:{text:${JSON.stringify(nm)}}}`:"";cmds.push(P(`setblock ${pos} minecraft:${ty}${nm2}`));it.forEach(o=>cmds.push(P(`item replace block ${pos} container.${o.s} with ${jI(o,1)} ${o.n}`)))}else{cmds.push(P(hd+f.join(",")+"]}"));for(;k<S.length;k++)cmds.push(P(`data modify block ${pos} Items append value ${S[k]}`))}
+if(cmds.some(c=>c.length>32000))w.push("Algún comando supera 32 000 caracteres (límite del bloque de comandos)")}
+else{cmds.push(P(`setblock ${pos} ${ty}`));const ec=[];
+it.forEach(o=>{const en=Object.entries(o.en);if(!en.length)cmds.push(P(`replaceitem block ${pos} slot.container ${o.s} ${o.id} ${o.n} 0`+(o.u?' {"item_lock":{"mode":"lock_in_slot"}}':"")));else ec.push([o,en])});
+if(ec.length){cmds.push("# ENCANTADOS (Bedrock): /enchant solo actúa sobre el ítem en tu mano. Ejecuta cada grupo, luego guarda el ítem en el contenedor (shift+clic) y sigue con el siguiente");
+ec.forEach(([o,en])=>{cmds.push(`# Slot ${o.s}: ${o.id}`);cmds.push(P(`replaceitem entity @s slot.weapon.mainhand 0 ${o.id} ${o.n} 0`));
+en.forEach(([k,v])=>{if(k=="sweeping_edge"){w.push("sweeping_edge no existe en Bedrock");return}const m=MX[k]||1,l=Math.min(v,m);if(l<v)w.push(`Bedrock limita ${k} a nivel ${m} con /enchant`);cmds.push(P(`enchant @s ${BN2[k]||k} ${l}`))})})}
+if(it.some(o=>o.nm||o.lo||o.tm))w.push("Bedrock no permite nombre, lore ni trims por comando")}
+rl($("cO"),cmds,w)}
+$("cC").addEventListener("input",cg);$("cC").addEventListener("change",cg);
+["head","chest","legs","feet","mainhand","offhand"].forEach(s=>$("mQ").innerHTML+=`<label>${s}<input id="q_${s}" list="d_items"></label>`);
+function smg(){const j=ED=="J",v=i=>$(i).value.trim(),e=v("mE"),pos=v("mP")||"~ ~ ~",nm=v("mN"),fl=[...document.querySelectorAll(".mf:checked")].map(x=>x.value),
+ls=i=>v(i).split("\n").map(s=>s.trim()).filter(Boolean),cs=i=>v(i).split(",").map(s=>s.trim()).filter(Boolean),eq=["head","chest","legs","feet","mainhand","offhand"].filter(s=>v("q_"+s)),cmds=[];
+if(j){const n=[];if(nm)n.push(`CustomName:{text:${JSON.stringify(nm)}}`);if($("mV").checked)n.push("CustomNameVisible:1b");fl.forEach(f=>n.push(f+":1b"));
+if(v("mB")=="z")n.push("IsBaby:1b");if(v("mB")=="a")n.push("Age:-24000");
+if(eq.length)n.push(`equipment:{${eq.map(s=>`${s}:{id:"minecraft:${v("q_"+s)}",count:1}`).join(",")}}`);
+const ef=ls("mF").map(s=>{const a=s.split(":");return`{id:"minecraft:${a[0]}",amplifier:${a[1]||0}b,duration:${a[2]||999999}}`});if(ef.length)n.push(`active_effects:[${ef.join(",")}]`);
+const at=ls("mA").map(s=>{const a=s.split(":");return`{id:"minecraft:${a[0]}",base:${a[1]||1}}`});if(at.length)n.push(`attributes:[${at.join(",")}]`);
+const ps=cs("mS");if(ps.length)n.push(`Passengers:[${ps.map(p=>`{id:"minecraft:${p}"}`).join(",")}]`);const tg=cs("mT");if(tg.length)n.push(`Tags:[${tg.map(x=>JSON.stringify(x)).join(",")}]`);if(v("mX"))n.push(v("mX"));
+cmds.push(P(`summon minecraft:${e} ${pos}${n.length?" {"+n.join(",")+"}":""}`))}
+else{const sel=nm?`@e[type=${e},name="${nm}",c=1]`:`@e[type=${e},c=1,r=6]`,ev=v("mB2")||(v("mB")?"minecraft:entity_born":"minecraft:entity_spawned");
+cmds.push(P(`summon ${e} ${pos}`+(nm||v("mB2")||v("mB")?` ~ ~ ${ev}${nm?` "${nm}"`:""}`:"")));
+const SL={head:"slot.armor.head",chest:"slot.armor.chest",legs:"slot.armor.legs",feet:"slot.armor.feet",mainhand:"slot.weapon.mainhand",offhand:"slot.weapon.offhand"};
+eq.forEach(s=>cmds.push(P(`replaceitem entity ${sel} ${SL[s]} 0 ${v("q_"+s)}`)));
+ls("mF").forEach(s=>{const a=s.split(":");cmds.push(P(`effect ${sel} ${a[0]} ${a[2]||999999} ${a[1]||0}`))});cs("mT").forEach(t=>cmds.push(P(`tag ${sel} add ${t}`)));
+cs("mS").forEach(p=>{cmds.push(P(`summon ${p} ${pos}`));cmds.push(P(`ride @e[type=${p},c=1,r=6] start_riding ${sel}`))});}
+rl($("mO"),cmds,j?[]:["Bedrock: flags (NoAI, etc.) y atributos se controlan con eventos/componentes del mob; aquí se generan nombre, equipo, efectos, tags y pasajeros"])}
+$("s8").addEventListener("input",smg);$("s8").addEventListener("change",smg);
+const _se=setEd;setEd=function(e){_se(e);cg();smg()};
+cr();cg();smg();
+</script><script>
+const CLR="white,orange,magenta,light_blue,yellow,lime,pink,gray,light_gray,cyan,purple,blue,brown,green,red,black".split(","),HX={white:"#F9FFFE",orange:"#F9801D",magenta:"#C74EBD",light_blue:"#3AB3DA",yellow:"#FED83D",lime:"#80C71F",pink:"#F38BAA",gray:"#474F52",light_gray:"#9D9D97",cyan:"#169C9C",purple:"#8932B8",blue:"#3C44AA",brown:"#835432",green:"#5E7C16",red:"#B02E26",black:"#1D1D21"},BD={white:15,orange:14,magenta:13,light_blue:12,yellow:11,lime:10,pink:9,gray:8,light_gray:7,cyan:6,purple:5,blue:4,brown:3,green:2,red:1,black:0};
+const PT=[["stripe_bottom","Franja inferior"],["stripe_top","Franja superior"],["stripe_left","Franja izquierda"],["stripe_right","Franja derecha"],["stripe_center","Palo central"],["stripe_middle","Franja media"],["stripe_downright","Banda ↘"],["stripe_downleft","Banda ↙"],["small_stripes","Palos pequeños"],["cross","Aspa"],["straight_cross","Cruz recta"],["diagonal_left","Diagonal izq. sup."],["diagonal_right","Diagonal der. sup."],["diagonal_up_left","Diagonal izq. inf."],["diagonal_up_right","Diagonal der. inf."],["half_vertical","Mitad izquierda"],["half_vertical_right","Mitad derecha"],["half_horizontal","Mitad superior"],["half_horizontal_bottom","Mitad inferior"],["square_bottom_left","Cantón inf. izq."],["square_bottom_right","Cantón inf. der."],["square_top_left","Cantón sup. izq."],["square_top_right","Cantón sup. der."],["triangle_bottom","Chevron inferior"],["triangle_top","Chevron superior"],["triangles_bottom","Dientes inferiores"],["triangles_top","Dientes superiores"],["circle","Círculo"],["rhombus","Rombo"],["border","Borde"],["curly_border","Borde ondulado"],["bricks","Ladrillos"],["gradient","Degradado superior"],["gradient_up","Degradado inferior"],["creeper","Creeper"],["skull","Calavera"],["flower","Flor"],["mojang","Mojang"],["globe","Globo"],["piglin","Piglin"],["flow","Flujo"],["guster","Guster"]];
+const PI={creeper:"creeper",skull:"skull",flower:"flower",mojang:"mojang",globe:"globe",piglin:"piglin",flow:"flow",guster:"guster",curly_border:"bordure_indented",bricks:"field_masoned"};
+const R=(a,b,c,d)=>x=>x.fillRect(a,b,c,d),Pg=p=>x=>{x.beginPath();p.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));x.closePath();x.fill()},Ci=(a,b,r)=>x=>{x.beginPath();x.arc(a,b,r,0,7);x.fill()},Mu=(...f)=>x=>f.forEach(g=>g(x)),Gr=(a,b)=>(x,c)=>{const g=x.createLinearGradient(0,a,0,b);g.addColorStop(0,c);g.addColorStop(1,c+"00");x.fillStyle=g;x.fillRect(0,0,20,40)},St=(w,f)=>x=>{x.lineWidth=w;x.strokeStyle=x.fillStyle;f(x)};
+const PD={stripe_bottom:R(0,32,20,8),stripe_top:R(0,0,20,8),stripe_left:R(0,0,6,40),stripe_right:R(14,0,6,40),stripe_center:R(7,0,6,40),stripe_middle:R(0,17,20,6),stripe_downright:Pg([[0,0],[5,0],[20,32],[20,40],[15,40],[0,8]]),stripe_downleft:Pg([[20,0],[15,0],[0,32],[0,40],[5,40],[20,8]]),
+small_stripes:Mu(R(2,0,2,24),R(6,0,2,24),R(12,0,2,24),R(16,0,2,24)),cross:Mu(Pg([[0,0],[5,0],[20,32],[20,40],[15,40],[0,8]]),Pg([[20,0],[15,0],[0,32],[0,40],[5,40],[20,8]])),straight_cross:Mu(R(7,0,6,40),R(0,17,20,6)),
+diagonal_left:Pg([[0,0],[20,0],[0,26]]),diagonal_right:Pg([[0,0],[20,0],[20,26]]),diagonal_up_left:Pg([[0,40],[20,40],[0,14]]),diagonal_up_right:Pg([[0,40],[20,40],[20,14]]),
+half_vertical:R(0,0,10,40),half_vertical_right:R(10,0,10,40),half_horizontal:R(0,0,20,20),half_horizontal_bottom:R(0,20,20,20),square_bottom_left:R(0,28,8,12),square_bottom_right:R(12,28,8,12),square_top_left:R(0,0,8,12),square_top_right:R(12,0,8,12),
+triangle_bottom:Pg([[0,40],[10,22],[20,40]]),triangle_top:Pg([[0,0],[10,18],[20,0]]),triangles_bottom:Pg([[0,40],[5,32],[10,40],[15,32],[20,40]]),triangles_top:Pg([[0,0],[5,8],[10,0],[15,8],[20,0]]),circle:Ci(10,20,5),rhombus:Pg([[10,10],[18,20],[10,30],[2,20]]),
+border:Mu(R(0,0,20,2),R(0,38,20,2),R(0,0,2,40),R(18,0,2,40)),curly_border:Mu(R(0,0,20,2),R(0,38,20,2),R(0,0,2,40),R(18,0,2,40),R(2,2,3,3),R(15,2,3,3),R(2,35,3,3),R(15,35,3,3)),bricks:Mu(R(0,9,20,1),R(0,19,20,1),R(0,29,20,1),R(5,0,1,9),R(13,10,1,9),R(5,20,1,9),R(13,30,1,9)),
+gradient:Gr(0,24),gradient_up:Gr(40,16),creeper:Mu(R(5,12,4,4),R(11,12,4,4),R(8,16,4,5),R(6,21,3,4),R(11,21,3,4)),skull:Mu(R(5,10,10,9),R(7,19,6,4)),flower:Mu(Ci(10,20,3),Ci(10,14,2.5),Ci(10,26,2.5),Ci(4,20,2.5),Ci(16,20,2.5)),mojang:Mu(R(4,12,3,16),R(13,12,3,16),Pg([[4,12],[7,12],[10,20],[13,12],[16,12],[10,28]])),
+globe:St(1.5,x=>{x.beginPath();x.arc(10,20,7,0,7);x.moveTo(3,20);x.lineTo(17,20);x.moveTo(10,13);x.lineTo(10,27);x.stroke()}),piglin:Mu(R(4,14,12,12),R(7,17,6,6)),flow:St(2,x=>{x.beginPath();x.arc(10,20,3,0,5);x.arc(10,20,7,0,5);x.stroke()}),guster:St(2,x=>{x.beginPath();x.arc(10,20,6,.5,5);x.stroke()})};
+let baseC="white",curC="red",BL=[];
+function sws(id,get,set){$(id).innerHTML=CLR.map(c=>`<button class="sw ${get()==c?"on":""}" title="${c}" style="background:${HX[c]}" data-c="${c}"></button>`).join("");$(id).onclick=e=>{const c=e.target.dataset.c;if(c){set(c);sws(id,get,set);bgen()}}}
+$("bP").innerHTML=PT.map(p=>`<option value="${p[0]}">${p[1]}</option>`).join("");
+function dr(cv,base,L,sh){const x=cv.getContext("2d"),k=cv.width/20;x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.scale(k,k);x.save();if(sh){x.beginPath();x.moveTo(0,0);x.lineTo(20,0);x.lineTo(20,22);x.lineTo(10,40);x.lineTo(0,22);x.closePath();x.clip()}
+x.fillStyle=HX[base];x.fillRect(0,0,20,40);L.forEach(l=>{x.fillStyle=HX[l.c];(PD[l.p]||PD.circle)(x,HX[l.c])});x.restore()}
+function bgen(){const sh=$("bI").value=="shield",j=ED=="J",T=$("bT").value||"@p";dr($("bcv"),baseC,BL,sh);
+$("bL").innerHTML=BL.map((l,i)=>`<div class="lay"><b>${i+1}</b><span class="sw" style="display:inline-block;background:${HX[l.c]}"></span><span style="flex:1">${(PT.find(p=>p[0]==l.p)||[])[1]}</span><button data-a="u${i}">↑</button><button data-a="d${i}">↓</button><button data-a="x${i}">✕</button></div>`).join("")||'<span class="hint">Sin capas</span>';
+const pt=BL.map(l=>`{pattern:"minecraft:${l.p}",color:"${l.c}"}`).join(","),cm=[];
+if(j)cm.push(P(sh?`give ${T} minecraft:shield[base_color="${baseC}"${BL.length?",banner_patterns=["+pt+"]":""}]`:`give ${T} minecraft:${baseC}_banner${BL.length?"[banner_patterns=["+pt+"]]":""}`));
+else{cm.push(P(`give ${T} ${sh?"shield":"banner 1 "+BD[baseC]}`));cm.push("# Bedrock no admite patrones por comando: usa el proceso del telar")}
+rl($("bO"),cm,BL.length>6?["El telar de supervivencia admite máx. 6 capas; el comando no tiene límite"]:[]);
+$("bS").innerHTML="<ol><li>Crea el estandarte base: 6 × "+baseC+"_wool + 1 palo (mesa de crafteo).</li>"+BL.map(l=>`<li>Telar: estandarte + ${l.c}_dye${PI[l.p]?" + "+PI[l.p]+"_banner_pattern":""} → ${(PT.find(p=>p[0]==l.p)||[])[1]}</li>`).join("")+(sh?"<li>Mesa de crafteo: escudo + estandarte terminado = escudo con diseño.</li>":"")+"</ol>"}
+$("bAd").onclick=()=>{BL.push({p:$("bP").value,c:curC});bgen()};$("bUn").onclick=()=>{BL.pop();bgen()};$("bCl").onclick=()=>{BL=[];bgen()};
+$("bL").onclick=e=>{const a=e.target.dataset.a;if(!a)return;const i=+a.slice(1),t=a[0];if(t=="x")BL.splice(i,1);else{const k=t=="u"?i-1:i+1;if(k>=0&&k<BL.length)[BL[i],BL[k]]=[BL[k],BL[i]]}bgen()};
+$("s9").addEventListener("change",e=>{if(e.target.id=="bI"||e.target.id=="bT")bgen()});$("bT").oninput=bgen;
+// Libros
+function bk(){const j=ED=="J",tp=$("kT").value,sz=+$("kS").value||250,cv=t=>$("kC").checked?t.replace(/&([0-9a-fk-or])/g,"§$1"):t;let pg=[];
+$("kX").value.split(/\n---\n?/).forEach(b=>{b=cv(b).trim();while(b.length>sz){let c=b.lastIndexOf(" ",sz);if(c<sz/2)c=sz;pg.push(b.slice(0,c).trim());b=b.slice(c).trim()}if(b||!pg.length)pg.push(b)});
+const cm=[],w=[];if(j){const t=JSON.stringify,body=tp=="written_book"?`written_book_content={title:${t($("kN").value)},author:${t($("kA").value)},generation:${$("kG").value},pages:[${pg.map(p=>`{raw:{text:${t(p)}}}`).join(",")}]}`:`writable_book_content={pages:[${pg.map(p=>t(p)).join(",")}]}`;const c=P(`give @p minecraft:${tp}[${body}]`);cm.push(c);if(c.length>32000)w.push("Comando demasiado largo (>32 000): reduce páginas")}
+else{cm.push(P(`give @p ${tp=="written_book"?"written_book":"writable_book"}`));cm.push("# Bedrock no permite texto por comando: copia cada página abajo y pégala en el libro y pluma")}
+rl($("kO"),cm,w);rl($("kP"),pg.map(p=>p||" "),[],"páginas — pulsa para copiar")}
+$("s10").addEventListener("input",bk);$("s10").addEventListener("change",bk);
+// Yunque
+const MU={protection:1,fire_protection:1,feather_falling:1,blast_protection:2,projectile_protection:1,respiration:2,aqua_affinity:2,thorns:4,depth_strider:2,frost_walker:2,soul_speed:4,swift_sneak:4,sharpness:1,smite:1,bane_of_arthropods:1,knockback:1,fire_aspect:2,looting:2,sweeping_edge:2,efficiency:1,silk_touch:4,unbreaking:1,fortune:2,power:1,punch:2,flame:2,infinity:4,luck_of_the_sea:2,lure:2,loyalty:1,impaling:2,riptide:2,channeling:4,multishot:2,piercing:1,quick_charge:1,mending:2,binding_curse:4,vanishing_curse:4,density:1,breach:2,wind_burst:2,lunge:1};
+const AP={PROT:"protection,unbreaking,mending,thorns,respiration,aqua_affinity",ESP:"sharpness,unbreaking,mending,looting,fire_aspect,sweeping_edge",PICO:"efficiency,unbreaking,mending,fortune",ARCO:"power,unbreaking,mending,infinity,flame,punch"};
+let AS={};
+function arr(){$("aR").innerHTML=Object.keys(MU).map(e=>{const c=e in AS;return`<label style="display:flex;gap:5px;align-items:center"><input type="checkbox" data-e="${e}" ${c?"checked":""} style="width:auto">${e}${c?`<input type="number" min="1" max="${MX[e]}" data-l="${e}" value="${AS[e]}" style="width:60px">`:""}</label>`}).join("");ao()}
+function apre(k){AS={};(AP[k]||"").split(",").filter(Boolean).forEach(e=>AS[e]=MX[e]);arr()}
+$("aR").addEventListener("change",e=>{const t=e.target;if(t.dataset.e){if(t.checked)AS[t.dataset.e]=MX[t.dataset.e];else delete AS[t.dataset.e];arr()}});
+$("aR").addEventListener("input",e=>{const t=e.target;if(t.dataset.l){let v=Math.max(1,Math.min(MX[t.dataset.l],+t.value||1));AS[t.dataset.l]=v;ao()}});
+function ao(){const B=Object.entries(AS).map(([e,l])=>({n:e,pen:0,e:l*MU[e],l:[e]}));if(!B.length){$("aO").innerHTML='<p class="hint">Selecciona encantamientos</p>';return}
+const pw=n=>2**n-1;let pen=0,sq=[],tot=0;B.forEach(b=>{const c=pw(pen)+b.e;sq.push(c);tot+=c;pen++});
+let A=B.map(b=>({...b})),st=[],tt=0;while(A.length>1){A.sort((a,b)=>a.pen-b.pen||a.e-b.e);const a=A.shift(),b=A.shift(),[L,Rt]=a.e>=b.e?[a,b]:[b,a],c=pw(L.pen)+pw(Rt.pen)+Rt.e;st.push(`Libro(${L.l.join("+")}) + Libro(${Rt.l.join("+")}) → ${c} niveles`);tt+=c;A.push({pen:Math.max(L.pen,Rt.pen)+1,e:L.e+Rt.e,l:[...L.l,...Rt.l]})}
+const fin=A[0],fc=pw(0)+pw(fin.pen)+fin.e;tt+=fc;st.push(`Ítem + libro combinado → ${fc} niveles`);const mx=Math.max(...sq),mx2=Math.max(fc,...st.map(s=>+s.match(/(\d+) niveles/)[1]));
+$("aO").innerHTML=`<div class="out">Uno por uno: ${tot} niveles en total (paso máximo ${mx}${mx>39?" ⚠ demasiado caro":""})\nEn árbol: ${tt} niveles en total (paso máximo ${mx2}${mx2>39?" ⚠ demasiado caro":""})\nAhorro: ${tot-tt} niveles</div><ol>${st.map(x=>`<li>${x}</li>`).join("")}</ol><p class="hint">Cálculo Java aproximado (multiplicadores de libro).</p>`}
+// Extras
+const hx=h=>parseInt(h.slice(1),16),POT="water,mundane,thick,awkward,night_vision,long_night_vision,invisibility,leaping,strong_leaping,fire_resistance,swiftness,strong_swiftness,slowness,strong_slowness,turtle_master,water_breathing,healing,strong_healing,harming,strong_harming,poison,strong_poison,regeneration,strong_regeneration,strength,strong_strength,weakness,luck,slow_falling,wind_charged,weaving,oozing,infested".split(",");
+const TOOLS=[
+{t:"👤 Cabeza de jugador / mob",f:[["name","Jugador","t","Notch"],["tex","Textura base64 (opcional)","t",""],["mob","Cabeza de mob (Java/Bedrock)","s","","|skeleton_skull|zombie_head|creeper_head|wither_skeleton_skull|dragon_head|piglin_head|player_head"],["nm","Nombre del ítem","t",""],["n","Cantidad","n","1"]],
+g:v=>{const j=ED=="J";if(v.mob)return[P(`give @p ${j?"minecraft:":""}${v.mob} ${v.n}`)];if(!j)return["# Bedrock no permite cabezas de jugador por comando: elige una cabeza de mob"];const c=[v.tex?`profile={properties:[{name:"textures",value:"${v.tex}"}]}`:`profile=${JSON.stringify(v.name)}`];if(v.nm)c.push(`custom_name={text:${JSON.stringify(v.nm)},italic:false}`);return[P(`give @p minecraft:player_head[${c.join(",")}] ${v.n}`)]}},
+{t:"🧪 Pociones / flechas",f:[["k","Tipo","s","potion","potion|splash_potion|lingering_potion|tipped_arrow"],["p","Poción base","s","strong_healing",POT.join("|")],["fx","Efectos extra (efecto:nivel:seg por línea)","x",""],["col","Color","c","#ff0000"],["uc","Usar color","b",""],["nm","Nombre","t",""]],
+g:v=>{if(ED!="J")return["# Bedrock: usa /effect o /give con data; no admite efectos custom por give"];const c=[`potion_contents={potion:"minecraft:${v.p}"`],e=v.fx.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>{const a=s.split(":");return`{id:"minecraft:${a[0]}",amplifier:${a[1]||0},duration:${a[2]||600}}`});if(e.length)c[0]+=`,custom_effects:[${e.join(",")}]`;if(v.uc)c[0]+=`,custom_color:${hx(v.col)}`;c[0]+="}";if(v.nm)c.push(`custom_name={text:${JSON.stringify(v.nm)},italic:false}`);return[P(`give @p minecraft:${v.k}[${c.join(",")}]`)]}},
+{t:"🎆 Fuegos artificiales",f:[["sh","Forma","s","star","small_ball|large_ball|star|creeper|burst"],["c1","Color","c","#ff0000"],["c2","Color de desvanecer","c","#ffff00"],["fd","Desvanecer","b",""],["tr","Estela","b","1"],["tw","Centelleo","b","1"],["fl","Vuelo (1-3)","n","2"],["n","Cantidad","n","64"]],
+g:v=>ED!="J"?["# Bedrock: sin NBT de fuegos artificiales por comando"]:[P(`give @p minecraft:firework_rocket[fireworks={flight_duration:${v.fl},explosions:[{shape:"${v.sh}",colors:[I;${hx(v.c1)}]${v.fd?`,fade_colors:[I;${hx(v.c2)}]`:""},has_trail:${!!v.tr},has_twinkle:${!!v.tw}}]}] ${v.n}`)]},
+{t:"🎨 Armadura de cuero teñida",f:[["i","Pieza","s","leather_chestplate","leather_helmet|leather_chestplate|leather_leggings|leather_boots|leather_horse_armor|wolf_armor"],["c","Color","c","#3c44aa"],["nm","Nombre","t",""]],
+g:v=>ED!="J"?["# Bedrock: no hay teñido por comando; usa un caldero con tinte"]:[P(`give @p minecraft:${v.i}[dyed_color=${hx(v.c)}${v.nm?`,custom_name={text:${JSON.stringify(v.nm)},italic:false}`:""}]`)]},
+{t:"🤝 Aldeano con trueques",f:[["pr","Profesión","s","librarian","armorer|butcher|cartographer|cleric|farmer|fisherman|fletcher|leatherworker|librarian|mason|shepherd|toolsmith|weaponsmith|nitwit|none"],["lv","Nivel (1-5)","n","5"],["ai","Sin IA","b","1"],["tr","Trueques: compra|compra2|vende (id:cant) por línea","x","emerald:1||diamond:1\nemerald:5|book:1|netherite_ingot:1"]],
+g:v=>{if(ED!="J")return["# Bedrock: no admite Offers por comando; usa trade tables en add-ons"];const it=s=>{const a=s.split(":");return a[0]?`{id:"minecraft:${a[0]}",count:${a[1]||1}}`:""},r=v.tr.split("\n").map(l=>l.split("|").map(s=>s.trim())).filter(a=>a[2]).map(a=>`{buy:${it(a[0])},${a[1]?`buyB:${it(a[1])},`:""}sell:${it(a[2])},maxUses:9999999,rewardExp:0b}`);return[P(`summon minecraft:villager ~ ~ ~ {${v.ai?"NoAI:1b,":""}VillagerData:{profession:"minecraft:${v.pr}",level:${v.lv},type:"minecraft:plains"},Offers:{Recipes:[${r.join(",")}]}}`)]}},
+{t:"⌨ Bloque de comandos",f:[["ty","Tipo","s","command_block","command_block|chain_command_block|repeating_command_block"],["cmd","Comando","t","say hola"],["au","Siempre activo","b","1"],["co","Condicional","b",""],["fc","Dirección","s","up","up|down|north|south|east|west"],["pos","Posición","t","~ ~1 ~"]],
+g:v=>ED!="J"?[P("give @p command_block"),"# Bedrock: el comando se escribe a mano en el bloque"]:[P(`setblock ${v.pos} minecraft:${v.ty}[conditional=${!!v.co},facing=${v.fc}]{Command:${JSON.stringify(v.cmd)},auto:${v.au?1:0}b}`),P(`give @p minecraft:${v.ty}[block_entity_data={id:"minecraft:command_block",Command:${JSON.stringify(v.cmd)},auto:${v.au?1:0}b}]`)]},
+{t:"🌀 Spawner personalizado",f:[["e","Entidad","t","zombie","#entities"],["pos","Posición","t","~ ~1 ~"],["n","Spawns por ciclo","n","4"],["mx","Máx. cercanas","n","6"],["rg","Rango jugador","n","16"],["d1","Delay mín (ticks)","n","20"],["d2","Delay máx (ticks)","n","100"]],
+g:v=>ED!="J"?[P(`setblock ${v.pos} mob_spawner`),"# Bedrock: elige la entidad con un huevo de aparición sobre el spawner"]:[P(`setblock ${v.pos} minecraft:spawner{SpawnData:{entity:{id:"minecraft:${v.e}"}},SpawnCount:${v.n}s,MaxNearbyEntities:${v.mx}s,RequiredPlayerRange:${v.rg}s,MinSpawnDelay:${v.d1}s,MaxSpawnDelay:${v.d2}s,Delay:20s}`)]},
+{t:"✨ Calculadora de XP",f:[["a","Nivel inicial","n","0"],["b","Nivel final","n","30"]],
+g:v=>{const p=L=>L<=16?L*L+6*L:L<=31?2.5*L*L-40.5*L+360:4.5*L*L-162.5*L+2220;return[`# XP de nivel ${v.a} a ${v.b}: ${Math.round(p(+v.b)-p(+v.a))} puntos`,`# Total hasta nivel ${v.b}: ${Math.round(p(+v.b))} puntos`,P(`xp add @s ${Math.round(p(+v.b)-p(+v.a))} points`)]}},
+{t:"🪧 Cartel con texto (Java)",f:[["ty","Madera","s","oak","oak|spruce|birch|jungle|acacia|dark_oak|mangrove|cherry|bamboo|crimson|warped|pale_oak"],["l1","Línea 1","t","Hola"],["l2","Línea 2","t",""],["l3","Línea 3","t",""],["l4","Línea 4","t",""],["co","Color","s","black",CLR.join("|")],["pos","Posición","t","~ ~ ~"]],
+g:v=>ED!="J"?["# Bedrock: sin NBT de carteles por comando"]:[P(`setblock ${v.pos} minecraft:${v.ty}_sign{front_text:{messages:[${[v.l1,v.l2,v.l3,v.l4].map(l=>`{text:${JSON.stringify(l)}}`).join(",")}],color:"${v.co}"}}`)]}];
+function tfd(f,i){const[k,l,t,d,o]=f;let h;if(t=="s")h=`<select data-k="${k}">${o.split("|").map(x=>`<option ${x==d?"selected":""}>${x}</option>`).join("")}</select>`;else if(t=="x")h=`<textarea data-k="${k}" rows="3">${d}</textarea>`;else if(t=="c")h=`<input data-k="${k}" type="color" value="${d}">`;else if(t=="b")return`<label style="display:flex;gap:5px;align-items:center"><input type="checkbox" data-k="${k}" ${d?"checked":""} style="width:auto"> ${l}</label>`;else h=`<input data-k="${k}" type="${t=="n"?"number":"text"}" value="${d}" ${o=="#entities"?'list="d_entities"':""}>`;return`<label>${l}${h}</label>`}
+function tg(i){const c=document.querySelector(`.tool[data-t="${i}"]`),v={};if(!c||!$("xo"+i))return;c.querySelectorAll("[data-k]").forEach(e=>v[e.dataset.k]=e.type=="checkbox"?e.checked:e.value);rl($("xo"+i),TOOLS[i].g(v),[],"resultado(s)")}
+$("xt").innerHTML=TOOLS.map((t,i)=>`<div class="card tool" data-t="${i}"><b>${t.t}</b><div class="row">${t.f.map(x=>tfd(x,i)).join("")}</div><div id="xo${i}"></div></div>`).join("");
+const tga=()=>TOOLS.forEach((t,i)=>tg(i));$("xt").addEventListener("input",e=>tg(e.target.closest(".tool").dataset.t));$("xt").addEventListener("change",e=>tg(e.target.closest(".tool").dataset.t));
+const _s3=setEd;setEd=function(e){_s3(e);bgen();bk();ao();tga()};
+sws("bBs",()=>baseC,c=>baseC=c);sws("bCs",()=>curC,c=>curC=c);apre("PROT");bgen();bk();tga();
+</script><script>
+// ===== Comandos extra =====
+[K("advancement",A,"j","a:Acción:s:grant:grant,revoke|"+SELF+"|m:Modo:s:everything:everything,only,from,through,until|adv:Logro:t","advancement {a} {target} {m} {adv}"),
+K("recipe",A,"j","a:Acción:s:give:give,take|"+SELF+"|r:Receta:t:*","recipe {a} {target} {r}"),
+K("loot",E,"j","a:Destino:s:give:give,spawn,insert,replace|"+SELF+"|t:Tabla:t:minecraft:chests/ancient_city","loot {a} {target} loot {t}"),
+K("rotate",E,"j",SELF+"|r:Yaw pitch:t:0 0","rotate {target} {r}"),
+K("datapack",A,"j","a:Acción:s:enable:enable,disable,list|n:Nombre:t:file/mi_pack","datapack {a} {n}"),
+K("stopsound",X,"jb",SELF+"|src:Fuente (Java):s:*:*,master,music,record,weather,block,hostile,neutral,player,ambient,voice|s:Sonido:t","stopsound {target} {src} {s}","stopsound {target} {s}"),
+K("music",X,"b","a:Acción:s:play:play,queue,stop,volume|t:Pista:t:music.game|v:Volumen:n:1|fd:Fundido:n:0","","music {a} {t} {v} {fd}"),
+K("alwaysday",W,"b","v:Valor:s:true:true,false","","alwaysday {v}"),
+K("toggledownfall",W,"b","a:x:t:","","toggledownfall"),
+K("testforblock",W,"b",POS+"|b:Bloque:t:stone:#blocks","","testforblock {pos} {b}"),
+K("clearspawnpoint",Z,"b",SELF,"","clearspawnpoint {target}"),
+K("transferserver",A,"b","h:Host:t:ejemplo.com|p:Puerto:n:19132","","transferserver {h} {p}")].forEach(c=>CM.push(c));
+// ===== Herramientas extra =====
+["head","pot","fw","dye","trade","cb","spw","xp","sign"].forEach((k,i)=>{TOOLS[i].k=k;TOOLS[i].ed=["jb","j","j","j","j","jb","jb","jb","j"][i]});
+const fa=t=>"["+t.trim().split(/\s+/).map(n=>(+n||0)+"f").join(",")+"]",it1=id=>`{id:"minecraft:${id}",count:1}`;
+TOOLS.push({k:"as",ed:"j",t:"🗿 Armor stand con pose",f:[["nm","Nombre","t",""],["hd","Cabeza x y z","t","0 0 0"],["bd","Cuerpo","t","0 0 0"],["la","Brazo izq.","t","0 0 0"],["ra","Brazo der.","t","0 0 0"],["ll","Pierna izq.","t","0 0 0"],["rl","Pierna der.","t","0 0 0"],["arms","Con brazos","b","1"],["nb","Sin base","b","1"],["sm","Pequeño","b",""],["iv","Invisible","b",""],["mk","Marker","b",""],["ng","Sin gravedad","b",""],["e1","Casco","t","","#items"],["e2","Peto","t","","#items"],["e3","Pantalón","t","","#items"],["e4","Botas","t","","#items"],["e5","Mano principal","t","","#items"],["e6","Mano secundaria","t","","#items"]],
+g:v=>{const n=[`Pose:{Head:${fa(v.hd)},Body:${fa(v.bd)},LeftArm:${fa(v.la)},RightArm:${fa(v.ra)},LeftLeg:${fa(v.ll)},RightLeg:${fa(v.rl)}}`];if(v.nm)n.push(`CustomName:{text:${JSON.stringify(v.nm)}},CustomNameVisible:1b`);[["arms","ShowArms"],["nb","NoBasePlate"],["sm","Small"],["iv","Invisible"],["mk","Marker"],["ng","NoGravity"]].forEach(([a,b])=>v[a]&&n.push(b+":1b"));
+const q=[["e1","head"],["e2","chest"],["e3","legs"],["e4","feet"],["e5","mainhand"],["e6","offhand"]].filter(a=>v[a[0]]).map(a=>`${a[1]}:${it1(v[a[0]])}`);if(q.length)n.push(`equipment:{${q.join(",")}}`);return[P(`summon minecraft:armor_stand ~ ~ ~ {${n.join(",")}}`)]}});
+TOOLS.push({k:"disp",ed:"j",t:"🪧 Display (texto / bloque / ítem)",f:[["ty","Tipo","s","text_display","text_display|block_display|item_display"],["tx","Texto","t","Hola mundo"],["col","Color texto","c","#ffd700"],["bk","Bloque","t","diamond_block","#blocks"],["im","Ítem","t","diamond","#items"],["bb","Billboard","s","center","fixed|center|horizontal|vertical"],["sc","Escala","n","1"],["tp","Fondo transparente","b","1"]],
+g:v=>{const c=v.ty=="text_display"?`text:{text:${JSON.stringify(v.tx)},color:"${v.col}"}${v.tp?",background:0":""}`:v.ty=="block_display"?`block_state:{Name:"minecraft:${v.bk}"}`:`item:${it1(v.im)},item_display:"fixed"`,z=`${+v.sc||1}f`;return[P(`summon minecraft:${v.ty} ~ ~1 ~ {${c},billboard:"${v.bb}",transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[${z},${z},${z}]}}`)]}});
+TOOLS.push({k:"raw",ed:"b",t:"💬 tellraw / titleraw (rawtext)",f:[["cmd","Comando","s","titleraw","tellraw|titleraw"],["k","Tipo (titleraw)","s","title","title|subtitle|actionbar"],["tg","Objetivo","t","@a","#sel"],["tx","Texto (& = §)","t","Hola &a mundo"],["sel","Selector (nombre)","t",""],["sc","Objetivo scoreboard","t",""],["sn","Nombre del score","t","@s"],["tr","Clave translate","t",""]],
+g:v=>{const p=[];if(v.tx)p.push({text:v.tx.replace(/&([0-9a-fk-or])/g,"§$1")});if(v.sel)p.push({selector:v.sel});if(v.sc)p.push({score:{name:v.sn||"@s",objective:v.sc}});if(v.tr)p.push({translate:v.tr});return[P(`${v.cmd} ${v.tg} ${v.cmd=="titleraw"?v.k+" ":""}${JSON.stringify({rawtext:p})}`)]}});
+TOOLS.push({k:"lock",ed:"b",t:"🔒 give con restricciones (Bedrock)",f:[["tg","Objetivo","t","@p","#sel"],["it","Ítem","t","diamond_pickaxe","#items"],["n","Cantidad","n","1"],["d","Data","n","0"],["lk","Bloqueo","s","","|lock_in_slot|lock_in_inventory"],["kd","Conservar al morir","b",""],["pl","Puede colocarse en (coma)","t",""],["ds","Puede romper (coma)","t",""]],
+g:v=>{const o={},bl=x=>x.split(",").map(y=>y.trim()).filter(Boolean);if(v.lk)o.item_lock={mode:v.lk};if(v.kd)o.keep_on_death={};if(v.pl)o.can_place_on={blocks:bl(v.pl)};if(v.ds)o.can_destroy={blocks:bl(v.ds)};return[P(`give ${v.tg} ${v.it} ${v.n} ${v.d}${Object.keys(o).length?" "+JSON.stringify(o):""}`)]}});
+TOOLS.push({k:"tick",ed:"b",t:"📍 Ticking area",f:[["a","Acción","s","circle","circle|box|remove|list|remove_all"],["p1","Posición 1","t","~ ~ ~"],["p2","Posición 2 (box)","t","~10 ~ ~10"],["r","Radio (circle)","n","4"],["nm","Nombre","t","zona1"],["pr","Preload","b",""]],
+g:v=>[P(v.a=="circle"?`tickingarea add circle ${v.p1} ${v.r} ${v.nm}${v.pr?" true":""}`:v.a=="box"?`tickingarea add ${v.p1} ${v.p2} ${v.nm}${v.pr?" true":""}`:v.a=="remove"?`tickingarea remove ${v.nm}`:v.a=="list"?"tickingarea list":"tickingarea remove_all")]});
+TOOLS.push({k:"cam",ed:"b",t:"🎥 Cámara cinemática",f:[["a","Acción","s","set","set|fade|clear"],["tg","Jugador","t","@s","#sel"],["pre","Preset","s","minecraft:free","minecraft:free|minecraft:first_person|minecraft:third_person|minecraft:third_person_front"],["et","Suavizado (seg)","n","2"],["ez","Curva","s","in_out_sine","linear|in_sine|out_sine|in_out_sine|in_quad|out_quad|in_out_quad|in_cubic|out_cubic|in_out_cubic|in_bounce|out_bounce|in_out_bounce"],["pos","Posición","t","~ ~5 ~-5"],["fc","Mirar a (pos o selector)","t","@p"],["fi","Fade: entrada/mantener/salida","t","1 2 1"],["fcol","Color fade","c","#000000"]],
+g:v=>{const h=v.fcol,r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return[P(v.a=="set"?`camera ${v.tg} set ${v.pre} ease ${v.et} ${v.ez} pos ${v.pos}${v.fc?" facing "+v.fc:""}`:v.a=="fade"?`camera ${v.tg} fade time ${v.fi} color ${r} ${g} ${b}`:`camera ${v.tg} clear`)]}});
+TOOLS.push({k:"bs",ed:"b",t:"🧱 Bloque con estados (Bedrock)",f:[["pos","Posición","t","~ ~ ~"],["b","Bloque","t","stone_slab","#blocks"],["st","Estados","t",'"minecraft:vertical_half"="top"']],
+g:v=>[P(`setblock ${v.pos} ${v.b}${v.st?" ["+v.st+"]":""}`)]});
+function tfd(f,i){const[k,l,t,d,o]=f;let h;if(t=="s")h=`<select data-k="${k}">${o.split("|").map(x=>`<option ${x==d?"selected":""}>${x}</option>`).join("")}</select>`;else if(t=="x")h=`<textarea data-k="${k}" rows="3">${d}</textarea>`;else if(t=="c")h=`<input data-k="${k}" type="color" value="${d}">`;else if(t=="b")return`<label style="display:flex;gap:5px;align-items:center"><input type="checkbox" data-k="${k}" ${d?"checked":""} style="width:auto"> ${l}</label>`;else h=`<input data-k="${k}" type="${t=="n"?"number":"text"}" value="${d}" ${o&&o[0]=="#"?`list="d_${o.slice(1)}"`:""}>`;return`<label>${l}${h}</label>`}
+function rt(){$("xt").innerHTML=TOOLS.map((t,i)=>`<div class="card tool" data-t="${i}" data-ed="${t.ed}" data-key="${t.k}"><b>${t.t}</b><div class="row">${t.f.map(x=>tfd(x,i)).join("")}</div><div id="xo${i}"></div></div>`).join("");tga()}
+// ===== Formas =====
+const cs=(b,d)=>{b=b.trim();if(b[0]=="~"){const n=(parseFloat(b.slice(1))||0)+d;return n?"~"+n:"~"}return String(+b+d)};
+function cl(el,lines,per){const ch=[];for(let i=0;i<lines.length;i+=per)ch.push(lines.slice(i,i+per).join("\n"));window.C_fo=ch;el.innerHTML=`<p class="hint">${lines.length} líneas en ${ch.length} bloque(s)${lines.length>3000?" ⚠ muchas líneas: baja el radio":""}</p>`+ch.map((c,i)=>`<div class="out" style="max-height:140px;overflow:auto">${esc(c)}</div><button onclick="navigator.clipboard.writeText(window.C_fo[${i}]);toast()">📋 Copiar bloque ${i+1}</button>`).join("")}
+function fsh(){const t=$("fT").value,b=$("fB").value.trim()||"stone",r=Math.max(1,Math.min(32,+$("fR").value||8)),h=Math.max(1,Math.min(64,+$("fH").value||10)),o=($("fO").value.trim()||"~ ~ ~").split(/\s+/),hl=$("fHl").checked,sl=ED=="J"?"":"",L=[];const c=(x,y,z)=>`${cs(o[0],x)} ${cs(o[1],y)} ${cs(o[2],z)}`,pf=$("sl").checked?"/":"";
+if(t=="cub"){L.push(`${pf}fill ${c(-r,0,-r)} ${c(r,2*r,r)} ${b}${hl?" hollow":""}`)}
+else if(t=="lin"){const [dx,dy,dz]=$("fL").value.split(/\s+/).map(Number),n=Math.max(Math.abs(dx),Math.abs(dy),Math.abs(dz))||1;for(let i=0;i<=n;i++)L.push(`${pf}setblock ${c(Math.round(dx*i/n),Math.round(dy*i/n),Math.round(dz*i/n))} ${b}`)}
+else{const yr=t=="sph"?[-r,r]:t=="cir"?[0,0]:t=="cyl"?[0,h-1]:[0,r],ins=(x,y,z)=>{const d=Math.hypot(x,y,z),q=Math.hypot(x,z);if(t=="sph"||t=="dom")return(t=="sph"||y>=0)&&d<=r+.5&&(!hl||d>r-.5);if(t=="cyl"||t=="cir")return q<=r+.5&&(!hl||q>r-.5);const m=Math.max(Math.abs(x),Math.abs(z));return m<=r-y&&(!hl||m>r-y-1||y==0)};
+for(let y=yr[0];y<=yr[1];y++)for(let z=-r;z<=r;z++){let s0=null;for(let x=-r;x<=r+1;x++){const k=x<=r&&ins(x,y,z);if(k&&s0===null)s0=x;if(!k&&s0!==null){L.push(s0==x-1?`${pf}setblock ${c(s0,y,z)} ${b}`:`${pf}fill ${c(s0,y,z)} ${c(x-1,y,z)} ${b}`);s0=null}}}}
+cl($("fOut"),L,150)}
+$("s15").addEventListener("input",fsh);$("s15").addEventListener("change",fsh);
+// ===== Referencia =====
+const BIO="plains,forest,desert,jungle,savanna,taiga,swamp,badlands,ocean,deep_ocean,deep_dark,dripstone_caves,lush_caves,cherry_grove,pale_garden,mangrove_swamp,snowy_plains,ice_spikes,mushroom_fields,nether_wastes,crimson_forest,warped_forest,soul_sand_valley,basalt_deltas,the_end,end_highlands",STR="village,stronghold,mansion,monument,fortress,bastion_remnant,ancient_city,trial_chambers,pillager_outpost,shipwreck,ocean_ruin,buried_treasure,desert_pyramid,jungle_pyramid,igloo,swamp_hut,end_city,nether_fossil,ruined_portal,trail_ruins",ATT="max_health,movement_speed,attack_damage,armor,armor_toughness,luck,scale,step_height,gravity,jump_strength,knockback_resistance,follow_range,flying_speed,attack_speed,block_interaction_range,entity_interaction_range,safe_fall_distance,fall_damage_multiplier,burning_time,mining_efficiency,sneaking_speed,water_movement_efficiency,oxygen_bonus",SLJ="weapon.mainhand,weapon.offhand,armor.head,armor.chest,armor.legs,armor.feet,armor.body,hotbar.0,inventory.0,container.0,enderchest.0,saddle,horse.armor",SLB="slot.weapon.mainhand,slot.weapon.offhand,slot.armor.head,slot.armor.chest,slot.armor.legs,slot.armor.feet,slot.hotbar,slot.inventory,slot.enderchest,slot.saddle,slot.armor,slot.container";
+const RF={"Ítems":["jb",()=>L.items],"Bloques":["jb",()=>L.blocks],"Entidades":["jb",()=>L.entities],"Efectos":["jb",()=>L.effects],"Encantamientos":["jb",()=>Object.keys(MX).map(k=>`${ED=="B"&&BN2[k]?BN2[k]:k} (máx ${MX[k]})`).join(",")],"Gamerules":["jb",()=>L["rules"+ED]],"Partículas":["jb",()=>L.particles],"Sonidos":["j",()=>L.sounds],"Biomas":["jb",()=>BIO],"Estructuras":["j",()=>STR],"Atributos":["j",()=>ATT],"Slots":["jb",()=>ED=="J"?SLJ:SLB]};
+function rf(){const cur=$("rS").value;$("rS").innerHTML=Object.keys(RF).filter(k=>RF[k][0].includes(ED.toLowerCase())).map(k=>`<option ${k==cur?"selected":""}>${k}</option>`).join("");const q=$("rQ").value.toLowerCase(),l=(RF[$("rS").value]||["",()=>""])[1]().split(",").filter(x=>x.toLowerCase().includes(q));$("rL").innerHTML=l.map(x=>`<span class="cp" data-v="${esc(x.replace(/ \(.*/,""))}">${esc(x)}</span>`).join("")||"—"}
+$("s14").addEventListener("input",rf);$("rL").onclick=e=>{const v=e.target.dataset.v;if(v){navigator.clipboard&&navigator.clipboard.writeText(v);e.target.style.borderColor="#5ac33f"}};
+// ===== Favoritos =====
+let FV=[];try{FV=JSON.parse(localStorage.getItem("mcfav")||"[]")}catch(e){}
+function fvr(){$("fv").innerHTML=FV.map((h,i)=>`<button data-i="${i}">${esc(h)}</button>`).join("")||'<span class="hint">Sin favoritos. Usa ⭐ en Comandos.</span>'}
+function fvAdd(){const t=$("co").textContent;if(t&&!FV.includes(t)){FV.unshift(t);try{localStorage.setItem("mcfav",JSON.stringify(FV))}catch(e){}fvr()}}
+$("fv").onclick=e=>{const i=e.target.dataset.i;if(i!=null){navigator.clipboard&&navigator.clipboard.writeText(FV[i]);e.target.style.borderColor="#5ac33f"}};
+$("fvc").onclick=()=>{FV=[];try{localStorage.removeItem("mcfav")}catch(e){}fvr()};
+
+// ===== Generador de mobs: plantillas =====
+const MP=[["— elegir plantilla —",{}],["Creeper cargado",{mE:"creeper",mX:"powered:1b",mB2:"minecraft:become_charged"}],["Zombie bebé jinete de pollo",{mE:"chicken",mX:'Passengers:[{id:"minecraft:zombie",IsBaby:1b}]'}],["Esqueleto con arco y casco",{mE:"skeleton",q_head:"diamond_helmet",q_mainhand:"bow",mF:"fire_resistance:0:999999"}],["Gólem gigante",{mE:"iron_golem",mA:"scale:3\nmax_health:500"}],["Oveja arcoíris",{mE:"sheep",mN:"jeb_",mV:1}],["Enderman veloz e invisible",{mE:"enderman",mF:"speed:3:999999\ninvisibility:0:999999"}],["Wither esqueleto jefe",{mE:"wither_skeleton",mN:"Jefe",mV:1,q_mainhand:"netherite_sword",q_head:"netherite_helmet",mA:"max_health:200\nattack_damage:15"}],["Aldeano zombi",{mE:"zombie_villager"}],["Cerdo volador",{mE:"pig",mN:"Peppa",mV:1,mF:"levitation:0:999999"}]];
+$("mPre").innerHTML=MP.map(p=>`<option>${p[0]}</option>`).join("");
+$("mPre").onchange=()=>{const p=MP[$("mPre").selectedIndex][1];["mN","mB","mB2","mS","mT","mX","mF","mA"].forEach(i=>$(i).value=p[i]||"");["head","chest","legs","feet","mainhand","offhand"].forEach(x=>$("q_"+x).value=p["q_"+x]||"");$("mV").checked=!!p.mV;document.querySelectorAll(".mf").forEach(c=>c.checked=false);if(p.mE)$("mE").value=p.mE;smg()};
+// ===== Herramientas nuevas =====
+const hh=c=>"#"+c.map(x=>x.toString(16).padStart(2,"0")).join(""),rgb=h=>{const n=hx(h);return[n>>16&255,n>>8&255,n&255]};
+TOOLS.push({k:"rec",ed:"jb",t:"📜 Recetas personalizadas (datapack / add-on)",f:[["ty","Tipo","s","shaped","shaped|shapeless|cooking|stonecutting"],["kd","Cocción","s","smelting","smelting|blasting|smoking|campfire_cooking"],["cat","Categoría (Java)","s","misc","misc|equipment|building|redstone|food"],...[1,2,3,4,5,6,7,8,9].map(i=>["g"+i,"Casilla "+i+(i==1?" (↖ / ingrediente)":""),"t","","#items"]),["res","Resultado","t","diamond","#items"],["cnt","Cantidad","n","1"],["ns","Namespace","t","mipack"],["nm","Nombre archivo","t","mi_receta"],["xp","XP (cocción)","n","0.7"],["tm","Ticks (cocción)","n","200"]],
+g:v=>{const J=ED=="J",gr=[1,2,3,4,5,6,7,8,9].map(i=>(v["g"+i]||"").trim()),cn=+v.cnt||1,rs=v.res.trim(),m=x=>"minecraft:"+x,ns=v.ns||"mipack",nm=v.nm||"mi_receta",ing=gr.filter(Boolean),ds={identifier:`${ns}:${nm}`};let o;
+if(v.ty=="shaped"){const u=[...new Set(ing)],Lt=Object.fromEntries(u.map((x,i)=>[x,"ABCDEFGHI"[i]]));let rows=[0,1,2].map(r=>[0,1,2].map(c=>gr[r*3+c]?Lt[gr[r*3+c]]:" ").join("")).filter(r=>r.trim());let a=3,b=-1;rows.forEach(r=>{for(let i=0;i<3;i++)if(r[i]!=" "){a=Math.min(a,i);b=Math.max(b,i)}});rows=rows.map(r=>r.slice(a,b+1));const key=Object.fromEntries(u.map(x=>[Lt[x],J?m(x):{item:m(x)}]));
+o=J?{type:"minecraft:crafting_shaped",category:v.cat,pattern:rows,key,result:{id:m(rs),count:cn}}:{format_version:"1.20.10","minecraft:recipe_shaped":{description:ds,tags:["crafting_table"],pattern:rows,key,result:{item:m(rs),count:cn}}}}
+else if(v.ty=="shapeless")o=J?{type:"minecraft:crafting_shapeless",category:v.cat,ingredients:ing.map(m),result:{id:m(rs),count:cn}}:{format_version:"1.20.10","minecraft:recipe_shapeless":{description:ds,tags:["crafting_table"],ingredients:ing.map(x=>({item:m(x)})),result:{item:m(rs),count:cn}}};
+else if(v.ty=="stonecutting")o=J?{type:"minecraft:stonecutting",ingredient:m(gr[0]),result:{id:m(rs),count:cn}}:{format_version:"1.20.10","minecraft:recipe_shapeless":{description:ds,tags:["stonecutter"],ingredients:[{item:m(gr[0])}],result:{item:m(rs),count:cn}}};
+else o=J?{type:"minecraft:"+v.kd,category:"misc",ingredient:m(gr[0]),result:{id:m(rs)},experience:+v.xp,cookingtime:+v.tm}:{format_version:"1.20.10","minecraft:recipe_furnace":{description:ds,tags:[{smelting:"furnace",blasting:"blast_furnace",smoking:"smoker",campfire_cooking:"campfire"}[v.kd]],input:m(gr[0]),output:m(rs)}};
+return[`# Ruta: ${J?`data/${ns}/recipe/${nm}.json`:`BP/recipes/${nm}.json`}`,JSON.stringify(o,null,2),J?"# Aplica con /reload":"# Reinicia el mundo para cargar el add-on"]}});
+TOOLS.push({k:"loot",ed:"jb",t:"🎁 Tabla de botín",f:[["k","Tipo (Java)","s","chest","chest|entity|block|generic|fishing|gift"],["p","Ruta","t","chests/mi_tabla"],["ns","Namespace","t","mipack"],["rmin","Tiradas mín","n","1"],["rmax","Tiradas máx","n","3"],["l","Entradas: ítem|peso|mín|máx|encantar(1/0)","x","diamond|1|1|3|0\ngolden_apple|5|1|1|0\ndiamond_sword|2|1|1|1"]],
+g:v=>{const J=ED=="J",ns=v.ns||"mipack",en=v.l.split("\n").map(x=>x.trim()).filter(Boolean).map(x=>x.split("|").map(y=>y.trim())).map(([i,w,a,b,c])=>{const fn=[],mn=+a||1,mx=+b||1;if(mn!=1||mx!=1)fn.push(J?{function:"minecraft:set_count",count:{type:"minecraft:uniform",min:mn,max:mx}}:{function:"set_count",count:{min:mn,max:mx}});if(c&&c!="0")fn.push({function:J?"minecraft:enchant_randomly":"enchant_randomly"});const e={type:J?"minecraft:item":"item",name:"minecraft:"+i,weight:+w||1};if(fn.length)e.functions=fn;return e}),rr={min:+v.rmin||1,max:+v.rmax||1},pl={rolls:J?{type:"minecraft:uniform",...rr}:rr,entries:en},o=J?{type:"minecraft:"+v.k,pools:[pl]}:{pools:[pl]};
+return[`# Ruta: ${J?`data/${ns}/loot_table/${v.p}.json`:`BP/loot_tables/${v.p}.json`}`,JSON.stringify(o,null,2),J?P(`loot give @p loot ${ns}:${v.p}`):P(`loot give @p loot "${v.p}"`)]}});
+TOOLS.push({k:"flat",ed:"jb",t:"🌍 Mundo superplano",f:[["ly","Capas de abajo a arriba (bloque:altura)","x","bedrock:1\nstone:60\ndirt:2\ngrass_block:1"],["bi","Bioma","s","plains","plains|desert|forest|taiga|swamp|jungle|savanna|mushroom_fields"],["ft","Features","b",""],["lk","Lagos","b",""],["st","Aldeas","b",""]],
+g:v=>{const J=ED=="J",ly=v.ly.split("\n").map(x=>x.trim()).filter(Boolean).map(x=>{const[a,b]=x.split(":");return[a.trim(),+b||1]});if(J){const j=JSON.stringify({biome:"minecraft:"+v.bi,features:!!v.ft,lakes:!!v.lk,layers:ly.map(([b,h])=>({block:"minecraft:"+b,height:h})),structure_overrides:v.st?["minecraft:villages"]:[]});return[j,"# server.properties:","level-type=minecraft\\:flat\ngenerator-settings="+j.replace(/:/g,"\\:")]}
+const ID={plains:1,desert:2,forest:4,taiga:5,swamp:6,jungle:21,savanna:35,mushroom_fields:14};return[JSON.stringify({biome_id:ID[v.bi]||1,block_layers:ly.map(([b,h])=>({block_name:"minecraft:"+b,count:h})),encoding_version:6,structure_options:null,world_version:"version.post_1_18"}),"# Altura total: "+ly.reduce((a,b)=>a+b[1],0)+" bloques"]}});
+const SB=(a,b)=>["true","false"].includes(b)?[a,"s",b,"true|false"]:0;
+const SJ=[["motd","MOTD","t","A Minecraft Server"],["gamemode","Modo","s","survival","survival|creative|adventure|spectator"],["difficulty","Dificultad","s","easy","peaceful|easy|normal|hard"],["max-players","Máx. jugadores","n","20"],["level-seed","Semilla","t",""],["level-name","Nombre mundo","t","world"],["pvp","PvP","s","true","true|false"],["view-distance","Distancia vista","n","10"],["simulation-distance","Distancia simulación","n","10"],["online-mode","Modo online","s","true","true|false"],["white-list","Whitelist","s","false","true|false"],["spawn-protection","Protección spawn","n","16"],["allow-flight","Permitir vuelo","s","false","true|false"],["hardcore","Hardcore","s","false","true|false"],["enable-command-block","Bloques de comandos","s","false","true|false"],["level-type","Tipo de mundo","s","minecraft:normal","minecraft:normal|minecraft:flat|minecraft:large_biomes|minecraft:amplified"],["spawn-monsters","Monstruos","s","true","true|false"],["force-gamemode","Forzar modo","s","false","true|false"],["server-port","Puerto","n","25565"]],
+SBd=[["server-name","Nombre","t","Dedicated Server"],["gamemode","Modo","s","survival","survival|creative|adventure"],["difficulty","Dificultad","s","easy","peaceful|easy|normal|hard"],["allow-cheats","Cheats","s","false","true|false"],["max-players","Máx. jugadores","n","10"],["level-name","Nombre mundo","t","Bedrock level"],["level-seed","Semilla","t",""],["online-mode","Modo online","s","true","true|false"],["allow-list","Allowlist","s","false","true|false"],["view-distance","Distancia vista","n","32"],["tick-distance","Tick distance","n","4"],["default-player-permission-level","Permiso por defecto","s","member","visitor|member|operator"],["player-idle-timeout","Timeout inactividad (min)","n","30"],["server-port","Puerto","n","19132"],["texturepack-required","Texturas obligatorias","s","false","true|false"],["force-gamemode","Forzar modo","s","false","true|false"]];
+[["srvJ","j","⚙ server.properties (Java)",SJ],["srvB","b","⚙ server.properties (Bedrock)",SBd]].forEach(([k,ed,t,F])=>TOOLS.push({k,ed,t,f:F,g:v=>[F.map(x=>`${x[0]}=${x[0]=="level-type"?String(v[x[0]]).replace(/:/g,"\\:"):v[x[0]]}`).join("\n")]}));
+TOOLS.push({k:"enct",ed:"jb",t:"📖 Calculadora de mesa de encantamientos",f:[["b","Estantes (0-15)","n","15"],["m","Material","s","diamante (10)","netherite (15)|diamante (10)|oro (25)|hierro (9)|malla (12)|cuero (15)|piedra (5)|madera (15)|libro (1)"]],
+g:v=>{const B=Math.min(15,Math.max(0,+v.b||0)),a=1+(B>>1),z=8+(B>>1)+B,r=[[Math.max(a/3|0,1),Math.max(z/3|0,1)],[(a*2/3|0)+1,(z*2/3|0)+1],[Math.max(a,B*2),Math.max(z,B*2)]];return[`# Con ${B} estantes se ofrecen niveles:`,`# Ranura 1: ${r[0][0]}–${r[0][1]} (1 lapis)`,`# Ranura 2: ${r[1][0]}–${r[1][1]} (2 lapis)`,`# Ranura 3: ${r[2][0]}–${r[2][1]} (3 lapis)`,B<15?"# Con 15 estantes llegas a nivel 30":"# Máximo: nivel 30 disponible",`# Encantabilidad: ${v.m} · más alta = más encantamientos`]}});
+const bc=sq=>{let c=null;sq.forEach(n=>{const g=rgb(HX[n]);c=c?c.map((x,i)=>(x+g[i])>>1):g});return c},cn2=n=>n.trim().replace(/\s+/g,"_");
+TOOLS.push({k:"beacon",ed:"jb",t:"🔦 Color de faro",f:[["sq","Cristales de abajo a arriba (coma)","t","red,blue,yellow"]],
+g:v=>{const l=v.sq.split(",").map(cn2).filter(x=>HX[x]);if(!l.length)return["# Usa colores: red, light_blue, lime…"];const c=bc(l);return[`#c ${hh(c)} RGB ${c.join(", ")}`,"# Pon el primer cristal pegado al faro; cada siguiente promedia el color.",...l.map(x=>"# "+x+"_stained_glass")]}});
+TOOLS.push({k:"beaconS",ed:"jb",t:"🔍 Buscar color de faro",f:[["c","Color objetivo","c","#ff8800"],["n","Máx. cristales (1-4)","n","3"]],
+g:v=>{const t=rgb(v.c),n=Math.min(4,Math.max(1,+v.n||3));let best=null,bd=1e9;const rec=(sq)=>{if(sq.length){const c=bc(sq),d=(c[0]-t[0])**2+(c[1]-t[1])**2+(c[2]-t[2])**2;if(d<bd){bd=d;best=[...sq]}}if(sq.length<n)CLR.forEach(x=>rec([...sq,x]))};rec([]);const c=bc(best);return[`#c ${hh(c)} (más cercano)`,"# Secuencia: "+best.join(" → "),"# Diferencia RGB: "+Math.sqrt(bd).toFixed(1)]}});
+TOOLS.push({k:"dye2",ed:"jb",t:"🎨 Mezclador de tintes (armadura de cuero)",f:[["d","Tintes (nombre:cantidad, coma)","t","red:2,blue:1"],["ub","Armadura ya teñida","b",""],["base","Color base","c","#a06540"]],
+g:v=>{let sr=0,sg=0,sb=0,mx=0,n=0;const ad=(c,q)=>{sr+=c[0]*q;sg+=c[1]*q;sb+=c[2]*q;mx+=Math.max(...c)*q;n+=q};if(v.ub)ad(rgb(v.base),1);v.d.split(/[,\n]/).forEach(t=>{const[a,b]=t.trim().split(":"),k=cn2(a||"");if(HX[k])ad(rgb(HX[k]),+b||1)});if(!n)return["# Ej: red:2,blue:1"];const A=[sr/n,sg/n,sb/n],k=(mx/n)/Math.max(...A),c=A.map(x=>Math.min(255,x*k|0)),i=c[0]<<16|c[1]<<8|c[2];return[`#c ${hh(c)}  decimal ${i}`,ED=="J"?P(`give @p minecraft:leather_chestplate[dyed_color=${i}]`):"# Bedrock: mezcla los mismos tintes en el crafteo"]}});
+TOOLS.push({k:"grad",ed:"jb",t:"🌈 Degradado de texto",f:[["tx","Texto","t","Minecraft"],["c1","Color inicial","c","#ff0000"],["c2","Color final","c","#0000ff"]],
+g:v=>{const a=rgb(v.c1),b=rgb(v.c2),t=[...v.tx],n=Math.max(1,t.length-1),cl=i=>a.map((x,j)=>Math.round(x*(1-i/n)+b[j]*i/n));if(ED=="J")return[P(`tellraw @a [${t.map((c,i)=>`{text:${JSON.stringify(c)},color:"${hh(cl(i))}"}`).join(",")}]`),"# En MOTD/nombres usa §x§R§R§G§G§B§B por letra"];const P2=Object.entries(COL).map(([k,h])=>[k[0],rgb("#"+h)]),tx=t.map((c,i)=>{const q=cl(i);return"§"+P2.map(([k,r])=>[k,(r[0]-q[0])**2+(r[1]-q[1])**2+(r[2]-q[2])**2]).sort((x,y)=>x[1]-y[1])[0][0]+c}).join("");return[P(`tellraw @a ${JSON.stringify({rawtext:[{text:tx}]})}`),"# Texto: "+tx]}});
+TOOLS.push({k:"uuid",ed:"j",t:"🆔 UUID → array de enteros",f:[["u","UUID","t","069a79f4-44e9-4726-a5be-fca90e38aaf5"]],g:v=>{const h=v.u.replace(/-/g,"");if(h.length!=32)return["# UUID inválido"];return[`[I;${[0,8,16,24].map(i=>parseInt(h.slice(i,i+8),16)|0).join(",")}]`]}});
+TOOLS.push({k:"time",ed:"jb",t:"⏱ Conversor de tiempo",f:[["n","Valor","n","24000"],["u","Unidad","s","ticks","ticks|segundos|minutos|horas|días de juego"]],g:v=>{const t=(+v.n||0)*{ticks:1,segundos:20,minutos:1200,horas:72000,"días de juego":24000}[v.u];return[`# ${t} ticks`,`# ${t/20} segundos`,`# ${(t/1200).toFixed(2)} minutos`,`# ${(t/24000).toFixed(3)} días de juego`,P(`time set ${Math.round(t)%24000}`)]}});
+TOOLS.push({k:"dist",ed:"jb",t:"📏 Distancia entre puntos",f:[["a","Punto A x y z","t","0 64 0"],["b","Punto B x y z","t","100 70 100"]],g:v=>{const A=v.a.split(/\s+/).map(Number),B=v.b.split(/\s+/).map(Number),d=[0,1,2].map(i=>(B[i]||0)-(A[i]||0));return[`# Distancia: ${Math.hypot(...d).toFixed(2)} bloques`,`# Manhattan: ${d.reduce((x,y)=>x+Math.abs(y),0)}`,`# Diferencia: ${d.join(", ")}`,`# Chunks: ${Math.abs(d[0]>>4)} × ${Math.abs(d[2]>>4)}`,P(`tp @s ${B.join(" ")}`)]}});
+// ===== Visor de recetas =====
+const RV=("Estandarte|banner|1|wool,wool,wool,wool,wool,wool,,stick,|Cualquier lana; se tiñe con tinte\nEscudo|shield|1|planks,iron_ingot,planks,planks,planks,planks,,planks,|Cualquier tablón\nCohete de fuegos artificiales|firework_rocket|3|paper,gunpowder,firework_star,,,,,,|Sin forma. 1-3 pólvora (duración); estrellas opcionales\nEstrella de fuegos artificiales|firework_star|1|gunpowder,dye,,,,,,,|Sin forma. Añade tintes y: fire_charge (bola grande), gold_nugget (estrella), creeper_head (creeper), feather (estallido), diamond (rastro), glowstone_dust (centelleo)\nCofre|chest|1|planks,planks,planks,planks,,planks,planks,planks,planks|\nHorno|furnace|1|cobblestone,cobblestone,cobblestone,cobblestone,,cobblestone,cobblestone,cobblestone,cobblestone|\nMesa de crafteo|crafting_table|1|planks,planks,,planks,planks,,,,|\nCama|bed|1|,,,wool,wool,wool,planks,planks,planks|\nTNT|tnt|1|gunpowder,sand,gunpowder,sand,gunpowder,sand,gunpowder,sand,gunpowder|\nFaro|beacon|1|glass,glass,glass,glass,nether_star,glass,obsidian,obsidian,obsidian|\nMesa de encantamientos|enchanting_table|1|,book,,diamond,obsidian,diamond,obsidian,obsidian,obsidian|\nYunque|anvil|1|iron_block,iron_block,iron_block,,iron_ingot,,iron_ingot,iron_ingot,iron_ingot|\nManzana dorada|golden_apple|1|gold_ingot,gold_ingot,gold_ingot,gold_ingot,apple,gold_ingot,gold_ingot,gold_ingot,gold_ingot|\nCofre de Ender|ender_chest|1|obsidian,obsidian,obsidian,obsidian,eye_of_ender,obsidian,obsidian,obsidian,obsidian|\nEmbudo|hopper|1|iron_ingot,chest,iron_ingot,iron_ingot,,iron_ingot,,iron_ingot,|\nPistón|piston|1|planks,planks,planks,cobblestone,iron_ingot,cobblestone,cobblestone,redstone,cobblestone|\nPistón pegajoso|sticky_piston|1|,,,,slime_ball,,,piston,|\nObservador|observer|1|cobblestone,cobblestone,cobblestone,redstone,redstone,quartz,cobblestone,cobblestone,cobblestone|\nComparador|comparator|1|,redstone_torch,,redstone_torch,quartz,redstone_torch,stone,stone,stone|\nRepetidor|repeater|1|redstone_torch,redstone,redstone_torch,stone,stone,stone,,,|\nDispensador|dispenser|1|cobblestone,cobblestone,cobblestone,cobblestone,bow,cobblestone,cobblestone,redstone,cobblestone|\nBrújula|compass|1|,iron_ingot,,iron_ingot,redstone,iron_ingot,,iron_ingot,|\nReloj|clock|1|,gold_ingot,,gold_ingot,redstone,gold_ingot,,gold_ingot,|\nSoporte de pociones|brewing_stand|1|,blaze_rod,,cobblestone,cobblestone,cobblestone,,,|\nCubo|bucket|1|iron_ingot,,iron_ingot,,iron_ingot,,,,|\nRiendas|lead|2|string,string,,string,slime_ball,,,,string|\nPechera de diamante|diamond_chestplate|1|diamond,,diamond,diamond,diamond,diamond,diamond,diamond,diamond|").split("\n").map(l=>l.split("|"));
+function vr(){const q=$("vq").value.toLowerCase(),cur=$("vS").value,l=RV.filter(r=>r[0].toLowerCase().includes(q));$("vS").innerHTML=l.map(r=>`<option ${r[0]==cur?"selected":""}>${r[0]}</option>`).join("");const r=RV.find(x=>x[0]==$("vS").value)||l[0];if(!r){$("vG").innerHTML="—";return}const g=r[3].split(","),nm=x=>x?x.replace(/_/g," "):"";$("vG").innerHTML=`<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div class="rg">${[0,1,2,3,4,5,6,7,8].map(i=>`<div>${nm(g[i])}</div>`).join("")}</div><b>→</b><div class="rr">${nm(r[1])} ×${r[2]}</div></div>${r[4]?`<p class="hint">${r[4]}</p>`:""}`}
+$("s16").addEventListener("input",vr);
+// ===== Roba-skins =====
+function sk(){const raw=$("kn").value.trim()||"Notch",n=encodeURIComponent(raw);$("kv").innerHTML=`<img src="https://mc-heads.net/body/${n}/140" height="200" alt=""><img src="https://mc-heads.net/head/${n}/100" height="100" alt=""><img src="https://mc-heads.net/skin/${n}" height="100" alt="">`;$("kl").innerHTML=`<a href="https://mc-heads.net/download/${n}" target="_blank"><button>⬇ Descargar skin</button></a> <a href="https://namemc.com/profile/${n}" target="_blank"><button>🔎 NameMC</button></a>`;rl($("ko"),ED=="J"?[P(`give @p minecraft:player_head[profile=${JSON.stringify(raw)}]`),P(`summon minecraft:armor_stand ~ ~ ~ {equipment:{head:{id:"minecraft:player_head",count:1,components:{profile:${JSON.stringify(raw)}}}}}`)]:["# Bedrock: descarga la skin y súbela en Perfil › Skins. No hay cabezas de jugador por comando."],[],"comando(s)")}
+$("kn").oninput=sk;
+// ===== Menú =====
+const MENU=[["🏠","Inicio",[["Panel principal",13,"jb"]]],
+["⌨","Comandos",[["Todos los comandos",0,"jb",{cat:""}],["Jugador",0,"jb",{cat:Z}],["Mundo",0,"jb",{cat:W}],["Entidades",0,"jb",{cat:E}],["Scoreboard y tags",0,"jb",{cat:S}],["Pantalla y sonido",0,"jb",{cat:X}],["Administración",0,"jb",{cat:A}],["Constructor /execute",4,"jb"],["Selector @",1,"jb"]]],
+["🎒","Ítems y contenedores",[["Ítem con NBT / encantos",3,"jb"],["Cofres con ítems",7,"jb"],["Libros",10,"jb"],["Estandartes y escudos",9,"jb"],["Cabezas",12,"jb",{k:"head"}],["Pociones y flechas",12,"j",{k:"pot"}],["Fuegos artificiales",12,"j",{k:"fw"}],["Armadura teñida",12,"j",{k:"dye"}],["Mezclador de tintes",12,"jb",{k:"dye2"}],["Ítems con restricciones",12,"b",{k:"lock"}],["Roba-skins",17,"jb"],["Visor de recetas",16,"jb"]]],
+["🐾","Entidades",[["Generador de mobs",8,"jb"],["Aldeano con trueques",12,"j",{k:"trade"}],["Armor stand",12,"j",{k:"as"}],["Display texto/bloque/ítem",12,"j",{k:"disp"}]]],
+["🧱","Bloques y mundo",[["Formas (esfera, cilindro…)",15,"jb"],["Bloque de comandos",12,"jb",{k:"cb"}],["Spawner",12,"jb",{k:"spw"}],["Carteles",12,"j",{k:"sign"}],["Estados de bloque",12,"b",{k:"bs"}],["Ticking area",12,"b",{k:"tick"}]]],
+["📦","Datapacks y add-ons",[["Recetas personalizadas",12,"jb",{k:"rec"}],["Tablas de botín",12,"jb",{k:"loot"}],["Mundo superplano",12,"jb",{k:"flat"}],["server.properties Java",12,"j",{k:"srvJ"}],["server.properties Bedrock",12,"b",{k:"srvB"}]]],
+["💬","Texto y pantalla",[["JSON / rawtext",2,"jb"],["tellraw / titleraw",12,"b",{k:"raw"}],["Cámara cinemática",12,"b",{k:"cam"}],["Degradado de texto",12,"jb",{k:"grad"}]]],
+["🧰","Utilidades",[["Yunque: ahorrar XP",11,"jb"],["Mesa de encantamientos",12,"jb",{k:"enct"}],["Color de faro",12,"jb",{k:"beacon"}],["Buscar color de faro",12,"jb",{k:"beaconS"}],["Calculadora de XP",12,"jb",{k:"xp"}],["Conversor de tiempo",12,"jb",{k:"time"}],["Distancia entre puntos",12,"jb",{k:"dist"}],["UUID → array",12,"j",{k:"uuid"}],["Coordenadas, colores, stacks",5,"jb"],["Referencia de IDs",14,"jb"]]],
+["📜","Mis comandos",[["Historial y favoritos",6,"jb"]]]];
+const MI=[];MENU.forEach(c=>c[2].forEach(i=>MI.push({ic:c[0],c:c[1],t:i[0],s:i[1],ed:i[2],...(i[3]||{})})));
+let CUR=MI[0];const ok=m=>m.ed.includes(ED.toLowerCase());
+function mn(o){$("dr").classList.toggle("on",!!o);$("ov").classList.toggle("on",!!o);if(o)$("mq").focus()}
+function rm(){const q=$("mq").value.toLowerCase();$("mm").innerHTML=MENU.map(c=>{const it=MI.map((m,i)=>[m,i]).filter(([m])=>m.c==c[1]&&ok(m)&&(m.t+m.c).toLowerCase().includes(q));return it.length?`<details ${q||c[1]==CUR.c?"open":""}><summary>${c[0]} ${c[1]}</summary>${it.map(([m,i])=>`<button class="mi ${m==CUR?"on":""}" onclick="go(${i})">${m.t}</button>`).join("")}</details>`:""}).join("")}
+$("mq").oninput=rm;
+function hm(){$("hw").textContent=ED=="J"?"Modo Java 26.3: comandos con componentes, SNBT y JSON.":"Modo Bedrock 26.60: comandos, rawtext y add-ons.";$("hm").innerHTML=MENU.slice(1).map(c=>{const it=MI.map((m,i)=>[m,i]).filter(([m])=>m.c==c[1]&&ok(m));return it.length?`<div class="card"><b>${c[0]} ${c[1]}</b>${it.map(([m,i])=>`<button onclick="go(${i})">${m.t}</button>`).join("")}</div>`:""}).join("")}
+const _tab=tab;tab=function(i){_tab(i);$("s"+i)&&0};
+function go(i){const m=MI[i];CUR=m;if(m.cat!==undefined){cat=m.cat;lst()}tab(m.s);document.querySelectorAll(".tool").forEach(c=>c.classList.toggle("hid",m.s==12&&c.dataset.key!=m.k));$("bc").textContent=m.ic+" "+m.c+" › "+m.t;rm();mn(0);scrollTo(0,0)}
+const _s5=setEd;setEd=function(e){document.body.className=e;_s5(e);rt();rf();fsh();sk();vr();hm();if(!ok(CUR))CUR=MI[0];go(MI.indexOf(CUR))};
+fvr();setEd(ED);
+</script></body></html>
